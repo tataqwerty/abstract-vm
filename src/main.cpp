@@ -7,7 +7,8 @@ int main(int ac, char *av[])
 
 	if (ac == 1)
 	{
-		app.process(std::cin);
+		app.readStream(std::cin, READ_FROM_STDIN);
+		app.execute();
 	}
 	else
 	{
@@ -18,7 +19,8 @@ int main(int ac, char *av[])
 			file.open(av[i]);
 
 			try {
-				app.process(file, 1);
+				app.readStream(file);
+				app.execute();
 			} catch(std::exception & e) {
 				std::cout << "Error: " << (std::strrchr(av[0], '/') + 1) << ": " << e.what() << std::endl;
 			};

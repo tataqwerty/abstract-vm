@@ -7,14 +7,21 @@
 #include <list>
 #include <cstring>
 #include <fstream>
+#include <regex>
+
+#define END_OF_STDIN	";;"
+#define READ_FROM_STDIN	1
 
 class Application
 {
+	std::list<std::string>	commands;
+
 public:
 	Application();
 	~Application();
 
-	void	process(std::istream & stream, bool flag = 0);
+	void	readStream(std::istream & stream, bool flag = 0);
+	void	execute();
 };
 
 #endif
