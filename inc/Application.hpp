@@ -5,6 +5,8 @@
 #include "IOperand.hpp"
 #include <errno.h>
 #include <list>
+#include <cstring>
+#include <fstream>
 
 class Application
 {
@@ -12,7 +14,7 @@ public:
 	Application();
 	~Application();
 
-	void	process(FILE * stream, bool flag = 0);
+	void	process(std::istream & stream, bool flag = 0);
 };
 
 #endif

@@ -6,9 +6,9 @@ Application::Application()
 Application::~Application()
 {}
 
-void	Application::process(FILE * stream, bool flag)
+void	Application::process(std::istream & stream, bool flag)
 {
-	std::list<std::string> commands;
+	std::list<std::string>	commands;
 
 	if (errno)
 		throw std::logic_error(std::strerror(errno));

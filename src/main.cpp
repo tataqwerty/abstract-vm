@@ -3,35 +3,29 @@
 int main(int ac, char *av[])
 {
 	Application		app;
-	FILE			*file;
+	std::ifstream	file;
 
-	errno = 0;
-	try {
+	if (ac == 1)
+	{
+		app.process(std::cin);
+	}
+	else
+	{
 
-		if (ac == 1)
+		for (int i = 1; i < ac; i++)
 		{
-			app.process(stdin);
-		}
-		else
-		{
+			errno = 0;
+			file.open(av[i]);
 
-			for (int i = 1; i < ac; i++)
-			{
-				file = fopen(av[1], "r");
-				
-				try {
-					app.process(file, 1);
-				} catch(std::exception & e) {
-					fclose(file);
-				} throw;
+			try {
+				app.process(file, 1);
+			} catch(std::exception & e) {
+				std::cout << "Error: " << (std::strrchr(av[0], '/') + 1) << ": " << e.what() << std::endl;
+			};
 
-				fclose(file);
-			}
-
+			file.close();
 		}
 
-	} catch(std::exception & e) {
-		std::cout << e.what() << std::endl;
 	}
 	return 0;
 }

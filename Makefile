@@ -14,6 +14,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(OBJ) -o $(NAME)
+	@grep -xq $(NAME) .gitignore || echo $(NAME) >> .gitignore
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(OBJ_DIR)
