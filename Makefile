@@ -20,7 +20,7 @@ $(NAME): $(OBJ)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
 	@mkdir -p $(OBJ_DIR)
-	$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR)
+	$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -std=c++11
 
 clean:
 	rm -rf $(OBJ_DIR)

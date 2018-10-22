@@ -27,7 +27,8 @@ void	Application::readStream(std::istream & stream, bool flag)
 			buffer = buffer.substr(0, buffer.find(";"));
 
 		// if string was "; tralalalala" -> here this string is empty
-		if (buffer.size())
+		// if string contains space characters -> skip this string
+		if (buffer.size() && buffer.find_first_not_of(" \t\r") != buffer.npos)
 			commands.push_back(buffer);
 
 		buffer.clear();

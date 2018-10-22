@@ -7,7 +7,7 @@
 #include <list>
 #include <cstring>
 #include <fstream>
-#include <regex>
+// #include <regex>
 
 #define END_OF_STDIN	";;"
 #define READ_FROM_STDIN	1
