@@ -34,8 +34,21 @@
 
 #include <iostream>
 #include <regex>
+#include <vector>
 
 int main()
 {
+	std::map<std::regex, std::string> regexPairs = {
+		{regex("(push|assert)"), ""}
+	};
+
 	return 0;
 }
+
+// ^\s*(push|assert)\s*(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*$
+// ^\s*(push|assert)\s*(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*$
+// ^\s*(pop|dump|add|sub|mul|div|mod|print|exit)\s*$
+
+^\s*(push)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
+^\s*(assert)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
+^\s*(pop|dump|add|sub|mul|div|mod|print|exit)\s*$
