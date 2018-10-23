@@ -34,21 +34,52 @@
 
 #include <iostream>
 #include <regex>
-#include <vector>
+#include <map>
+
+void	pushHandler(std::smatch & match)
+{
+	for (std::string param : match)
+	{
+		std::cout << param << std::endl;
+	}
+}
+
+void	assertHandler(std::smatch & match)
+{
+	std::cout << "assertHandler" << std::endl;
+}
+
+
+void	basicCommandsHandler(std::smatch & match)
+{
+	std::cout << "basicCommandsHandler" << std::endl;
+}
 
 int main()
 {
-	std::map<std::regex, std::string> regexPairs = {
-		{regex("(push|assert)"), ""}
+	std::map<std::string, std::function<void(std::smatch &)>> arr = {
+		{"^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &pushHandler},
+		{"^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &assertHandler},
+		{"^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$", &basicCommandsHandler}
 	};
+	std::smatch	m;
+	std::string str = "push int8(32)";
 
+	std::map<std::string, std::function<void(std::smatch &)>>::iterator it = arr.begin();
+	std::map<std::string, std::function<void(std::smatch &)>>::iterator end = arr.end();
+
+	while (it != end)
+	{
+		if (std::regex_match(str, m, std::regex(it->first)))
+		{
+			it->second(m);
+			break ;
+		}
+		it++;
+	}
 	return 0;
 }
 
-// ^\s*(push|assert)\s*(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*$
-// ^\s*(push|assert)\s*(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*$
+// ^\s*(push)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
+// ^\s*(assert)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
 // ^\s*(pop|dump|add|sub|mul|div|mod|print|exit)\s*$
-
-^\s*(push)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
-^\s*(assert)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
-^\s*(pop|dump|add|sub|mul|div|mod|print|exit)\s*$
