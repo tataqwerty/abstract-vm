@@ -33,52 +33,72 @@
 // }
 
 #include <iostream>
-#include <regex>
-#include <map>
+// #include <regex>
 
-void	pushHandler(std::smatch & match)
-{
-	for (std::string param : match)
-	{
-		std::cout << param << std::endl;
-	}
-}
+// void	pushHandler(std::smatch & match)
+// {
+// 	for (std::string param : match)
+// 	{
+// 		std::cout << param << std::endl;
+// 	}
+// }
 
-void	assertHandler(std::smatch & match)
-{
-	std::cout << "assertHandler" << std::endl;
-}
+// void	assertHandler(std::smatch & match)
+// {
+// 	std::cout << "assertHandler" << std::endl;
+// }
 
 
-void	basicCommandsHandler(std::smatch & match)
-{
-	std::cout << "basicCommandsHandler" << std::endl;
-}
+// void	basicCommandsHandler(std::smatch & match)
+// {
+// 	std::cout << "basicCommandsHandler" << std::endl;
+// }
+
+#include <boost/regex.hpp>
 
 int main()
 {
-	std::map<std::string, std::function<void(std::smatch &)>> arr = {
-		{"^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &pushHandler},
-		{"^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &assertHandler},
-		{"^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$", &basicCommandsHandler}
-	};
-	std::smatch	m;
-	std::string str = "push int8(32)";
+	boost::regex	regExp("(?|(?:(push) (candy|kiss))|(?:(pop) (candy|kiss)))");
+	// boost::smatch	m;
+	// std::string		s = "";
 
-	std::map<std::string, std::function<void(std::smatch &)>>::iterator it = arr.begin();
-	std::map<std::string, std::function<void(std::smatch &)>>::iterator end = arr.end();
+	// std::cout << boost::regex_match(s, m, regExp) << std::endl;
 
-	while (it != end)
-	{
-		if (std::regex_match(str, m, std::regex(it->first)))
-		{
-			it->second(m);
-			break ;
-		}
-		it++;
-	}
+	// for (std::string s : m)
+	// {
+	// 	std::cout << s << std::endl;
+	// }
+
 	return 0;
 }
+
+
+// #include <utility>
+
+// int main()
+// {
+// 	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>> arr = {
+// 		{std::regex("^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$"), &pushHandler},
+// 		{std::regex("^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$"), &assertHandler},
+// 		{std::regex("^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$"), &basicCommandsHandler}
+// 	};
+// 	std::smatch	m;
+// 	std::string str = "push int8(32)";
+
+// 	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>>::iterator it = arr.begin();
+// 	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>>::iterator end = arr.end();
+
+// 	while (it != end)
+// 	{
+// 		if (std::regex_match(str, m, it->first))
+// 		{
+// 			it->second(m);
+// 			break ;
+// 		}
+// 		it++;
+// 	}
+// 	return 0;
+// }
 
 // ^\s*(push)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
 // ^\s*(assert)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
