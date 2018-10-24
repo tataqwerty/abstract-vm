@@ -80,6 +80,49 @@ int main()
 	return 0;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+// int main()
+// {
+// 	std::map<std::string, std::function<void(std::smatch &)>> arr = {
+// 		{"^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &pushHandler},
+// 		{"^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &assertHandler},
+// 		{"^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$", &basicCommandsHandler}
+// 	};
+// 	std::smatch	m;
+// 	std::string str = "push int8(32)";
+
+// 	std::map<std::string, std::function<void(std::smatch &)>>::iterator it = arr.begin();
+// 	std::map<std::string, std::function<void(std::smatch &)>>::iterator end = arr.end();
+
+// 	while (it != end)
+// 	{
+// 		if (std::regex_match(str, m, std::regex(it->first)))
+// 		{
+// 			it->second(m);
+// 			break ;
+// 		}
+// 		it++;
+// 	}
+// 	return 0;
+// }
+
+
+
+
+
+
 // ^\s*(push)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
 // ^\s*(assert)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
 // ^\s*(pop|dump|add|sub|mul|div|mod|print|exit)\s*$
