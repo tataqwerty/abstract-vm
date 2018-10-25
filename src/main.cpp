@@ -32,16 +32,27 @@
 // 	return 0;
 // }
 
+
+
+
+
+
+
 #include <iostream>
 #include <regex>
-#include <map>
 
 void	pushHandler(std::smatch & match)
 {
-	for (std::string param : match)
-	{
-		std::cout << param << std::endl;
-	}
+	std::map<std::string, eOperandType> arr = {
+		{"int8", Int8},
+		{"int16", Int16},
+	};
+
+
+	// for (std::string param : match)
+	// {
+	// 	std::cout << param << std::endl;
+	// }
 }
 
 void	assertHandler(std::smatch & match)
@@ -55,22 +66,24 @@ void	basicCommandsHandler(std::smatch & match)
 	std::cout << "basicCommandsHandler" << std::endl;
 }
 
+#include <boost/regex.hpp>
+#include <iostream>
+
 int main()
 {
-	std::map<std::string, std::function<void(std::smatch &)>> arr = {
-		{"^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &pushHandler},
-		{"^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &assertHandler},
-		{"^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$", &basicCommandsHandler}
+	std::vector<std::pair<boost::regex, std::function<void(std::smatch &)>>> arr = {
+		{std::regex("^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$"), &pushHandler},
+		{std::regex("^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$"), &assertHandler},
+		{std::regex("^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$"), &basicCommandsHandler}
 	};
 	std::smatch	m;
 	std::string str = "push int8(32)";
-
-	std::map<std::string, std::function<void(std::smatch &)>>::iterator it = arr.begin();
-	std::map<std::string, std::function<void(std::smatch &)>>::iterator end = arr.end();
+	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>>::iterator it = arr.begin();
+	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>>::iterator end = arr.end();
 
 	while (it != end)
 	{
-		if (std::regex_match(str, m, std::regex(it->first)))
+		if (std::regex_match(str, m, it->first))
 		{
 			it->second(m);
 			break ;
@@ -80,35 +93,23 @@ int main()
 	return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
+// #include <utility>
 
 // int main()
 // {
-// 	std::map<std::string, std::function<void(std::smatch &)>> arr = {
-// 		{"^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &pushHandler},
-// 		{"^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$", &assertHandler},
-// 		{"^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$", &basicCommandsHandler}
+// 	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>> arr = {
+// 		{std::regex("^\\s*(push)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$"), &pushHandler},
+// 		{std::regex("^\\s*(assert)\\s*(?:(?:(int8|int16|int32)\\s*\\(\\s*([-]?\\d+)\\s*\\)\\s*)|(?:(float|double)\\s*\\(\\s*([-]?\\d+\\.\\d+)\\s*\\)\\s*))$"), &assertHandler},
+// 		{std::regex("^\\s*(pop|dump|add|sub|mul|div|mod|print|exit)\\s*$"), &basicCommandsHandler}
 // 	};
 // 	std::smatch	m;
 // 	std::string str = "push int8(32)";
-
-// 	std::map<std::string, std::function<void(std::smatch &)>>::iterator it = arr.begin();
-// 	std::map<std::string, std::function<void(std::smatch &)>>::iterator end = arr.end();
+// 	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>>::iterator it = arr.begin();
+// 	std::vector<std::pair<std::regex, std::function<void(std::smatch &)>>>::iterator end = arr.end();
 
 // 	while (it != end)
 // 	{
-// 		if (std::regex_match(str, m, std::regex(it->first)))
+// 		if (std::regex_match(str, m, it->first))
 // 		{
 // 			it->second(m);
 // 			break ;
@@ -117,11 +118,6 @@ int main()
 // 	}
 // 	return 0;
 // }
-
-
-
-
-
 
 // ^\s*(push)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
 // ^\s*(assert)\s*(?:(?:(int8|int16|int32)\s*\(\s*([-]?\d+)\s*\)\s*)|(?:(float|double)\s*\(\s*([-]?\d+\.\d+)\s*\)\s*))$
