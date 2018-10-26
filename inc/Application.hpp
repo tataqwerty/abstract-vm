@@ -7,21 +7,23 @@
 #include <list>
 #include <cstring>
 #include <fstream>
-// #include <regex>
+#include <boost/regex.hpp>
 
 #define END_OF_STDIN	";;"
 #define READ_FROM_STDIN	1
 
 class Application
 {
-	std::list<std::string>	commands;
+	boost::regex				regExp;
 
+	boost::smatch	lexer(std::string const& buffer);
+	bool			parse(std::istream & stream, std::list<boost::smatch> & tokens, bool flagReadFromSTDIN);
+	void			execute(std::list<boost::smatch> & tokens);
 public:
 	Application();
 	~Application();
 
-	void	readStream(std::istream & stream, bool flag = 0);
-	void	execute();
+	void	process(std::istream & stream, bool flagReadFromSTDIN = 0);
 };
 
 #endif

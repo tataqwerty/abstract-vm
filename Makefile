@@ -12,15 +12,18 @@ SRC_NAMES=main.cpp OperandFactory.cpp Application.cpp
 SRC=$(addprefix $(SRC_DIR), $(SRC_NAMES))
 OBJ=$(addprefix $(OBJ_DIR), $(SRC_NAMES:.cpp=.o))
 
+BOOST_INC=~/.brew/include/
+BOOST_LIB=~/.brew/lib/libboost_regex.a
+
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME)
+	$(CC) $(OBJ) -o $(NAME) $(BOOST_LIB)
 	@grep -xq $(NAME) .gitignore || echo $(NAME) >> .gitignore
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
 	@mkdir -p $(OBJ_DIR)
-	$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -std=c++11
+	$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -I $(BOOST_INC) -std=c++11
 
 clean:
 	rm -rf $(OBJ_DIR)
