@@ -1,3 +1,4 @@
+OS=$(shell uname)
 CC=clang++
 FLAGS=-Wall -Wextra -Werror
 NAME=avm
@@ -12,8 +13,14 @@ SRC_NAMES=main.cpp OperandFactory.cpp Application.cpp
 SRC=$(addprefix $(SRC_DIR), $(SRC_NAMES))
 OBJ=$(addprefix $(OBJ_DIR), $(SRC_NAMES:.cpp=.o))
 
-BOOST_INC=~/.brew/include/
-BOOST_LIB=~/.brew/lib/libboost_regex.a
+ifeq ($(OS),Linux)
+	BOOST_INC=~/.linuxbrew/include/
+	BOOST_LIB=~/.linuxbrew/lib/libboost_regex.a
+else
+	BOOST_INC=~/.brew/include/
+	BOOST_LIB=~/.brew/lib/libboost_regex.a
+endif
+
 
 all: $(NAME)
 
