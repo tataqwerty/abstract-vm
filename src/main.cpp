@@ -15,7 +15,11 @@ int main(int ac, char *av[])
 
 	if (!args.size())
 	{
-		app.process(std::cin, READ_FROM_STDIN);
+		try {
+			app.process(std::cin, READ_FROM_STDIN);
+		} catch(std::exception & e) {
+			std::cout << e.what() << std::endl;
+		};
 	}
 	else
 	{
@@ -28,7 +32,7 @@ int main(int ac, char *av[])
 			try {
 				app.process(file);
 			} catch(std::exception & e) {
-				std::cout << "Error: " << (std::strrchr(av[0], '/') + 1) << ": " << e.what() << std::endl;
+				std::cout << e.what() << std::endl;
 			};
 
 			file.close();
