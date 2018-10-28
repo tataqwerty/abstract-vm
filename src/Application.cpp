@@ -92,7 +92,6 @@ void	Application::execute()
 			if (command.first == token->second["cmd"])
 			{
 				try {
-					this->token = token->second;
 					(this->*(command.second))();
 				} catch(std::exception & e) {
 					throw std::logic_error("Line " + std::to_string(token->first) + " : Error : " + e.what());
@@ -132,17 +131,22 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 
 void	Application::push()
 {
-	std::map<std::string, eOperandType>	types = {
+	boost::smatch						token	= tokens.begin()->second;
+	std::map<std::string, eOperandType>	types	= {
 		{"int8", Int8},
+		{"int16", Int16},
+		{"int32", Int32},
+		{"float", Float},
+		{"double", Double}
 	};
 
-	// stack.push();
+	stack.push(operandFactory.createOperand(types[token["type"]], token["value"]));
 }
 
 void	Application::pop()
 {
-	// if (!stack.empty())
-	// 	stack.pop();
-	// else
+	if (!stack.empty())
+		stack.pop();
+	else
 		throw std::logic_error("Pop on empty stack");
 }

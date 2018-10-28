@@ -11,3 +11,8 @@ OperandFactory::OperandFactory()
 
 OperandFactory::~OperandFactory()
 {}
+
+IOperand const	*OperandFactory::createOperand(eOperandType type, std::string const & value)
+{
+	
+}

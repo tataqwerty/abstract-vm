@@ -9,10 +9,8 @@ class IterStack : public std::stack<T>
 	typedef typename std::stack<T>::container_type::iterator Iter;
 	typedef typename std::stack<T>::container_type::const_iterator ConstIter;
 
-	IterStack(IterStack const& other)
-	{}
-	IterStack & operator=(IterStack const& other)
-	{}
+	IterStack(IterStack const& other);
+	IterStack & operator=(IterStack const& other);
 public:
 	IterStack()
 	{}
