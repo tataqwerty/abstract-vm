@@ -3,6 +3,7 @@
 
 #include "OperandFactory.hpp"
 #include "IOperand.hpp"
+#include "IterStack.hpp"
 #include <errno.h>
 #include <list>
 #include <cstring>
@@ -23,6 +24,9 @@ class Application
 	std::vector<std::string>		stringList;
 	std::map<size_t, boost::smatch>	tokens;
 	std::list<std::string>			errors;
+
+	std::pair<size_t, boost::smatch>	token;
+	IterStack										stack;
 
 	std::pair<size_t, boost::smatch>	tokenize(std::string & str, size_t line);
 	void			lexer();

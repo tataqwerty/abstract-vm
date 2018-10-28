@@ -92,6 +92,7 @@ void	Application::execute()
 			if (command.first == token->second["cmd"])
 			{
 				try {
+					this->token = token->second;
 					(this->*(command.second))();
 				} catch(std::exception & e) {
 					throw std::logic_error("Line " + std::to_string(token->first) + " : Error : " + e.what());
@@ -127,14 +128,10 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 
 /*
 ** COMMANDS
-**
-** DIKIY GAVNOKOD, PIZDEC!!!
-** access to certain token is made by getting the first element of tokens variable.
 */
 
 void	Application::push()
 {
-	boost::smatch	m = tokens.begin()->second;
 	std::map<std::string, eOperandType>	types = {
 		{"int8", Int8},
 	};
