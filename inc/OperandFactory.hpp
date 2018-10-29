@@ -1,11 +1,18 @@
 #ifndef OPERANDFACTORY_HPP
 # define OPERANDFACTORY_HPP
 
+# define COUNT_CMD 5
+
 #include "eOperandType.hpp"
-#include "IOperand.hpp"
+#include "Operand.hpp"
+#include <vector>
 
 class OperandFactory
 {
+	typedef IOperand const* (OperandFactory::*MemberFunction)(std::string const &) const;
+
+	MemberFunction		createOperandFunctions[COUNT_CMD];
+
 public:
 	OperandFactory();
 	// OperandFactory(OperandFactory const& other);
