@@ -30,7 +30,7 @@ IOperand const * OperandFactory::createInt8(std::string const & value) const
 		throw std::logic_error("Overflow exception");
 	}
 
-	return (new Operand<char>(numericValue, Int8));
+	return (new Operand<char>(numericValue, Int8, value));
 }
 
 IOperand const * OperandFactory::createInt16(std::string const & value) const

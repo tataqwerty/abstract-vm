@@ -4,12 +4,13 @@ void	Application::setFlagVerbose(bool value) { flagVerbose = value; }
 
 Application::Application()
 :	commands({
-		{
-			"push", &Application::push
-		},
-		{
-			"pop", &Application::pop
-		}
+		{"push", &Application::push},
+		{"pop", &Application::pop},
+		{"dump", &Application::dump},
+		{"add", &Application::add}
+		// ,
+		// {"sub", &Application::sub},
+		// {"mul", &Application::mul}
 	}),
 	flagVerbose(0),
 	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))\\s*$")
@@ -131,8 +132,8 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 
 void	Application::push()
 {
-	boost::smatch						token	= tokens.begin()->second;
-	std::map<std::string, eOperandType>	types	= {
+	boost::smatch								token = tokens.begin()->second;
+	static std::map<std::string, eOperandType>	types = {
 		{"int8", Int8},
 		{"int16", Int16},
 		{"int32", Int32},
@@ -150,3 +151,68 @@ void	Application::pop()
 	else
 		throw std::logic_error("Pop on empty stack");
 }
+
+void	Application::dump()
+{
+	IterStack<const IOperand *>::iterator it = stack.end();
+
+	for (size_t i = 0; i < stack.size(); i++)
+	{
+		it--;
+		std::cout << (*it)->toString() << std::endl;
+	}
+}
+
+void	Application::add()
+{
+	const IOperand *op1;
+	const IOperand *op2;
+
+	if (stack.size() >= 2)
+	{
+		op2 = stack.top();
+		stack.pop();
+		op1 = stack.top();
+		stack.pop();
+
+		stack.push(op1 + op2);
+	}
+	else
+		throw std::logic_error("Invalid quantity of operands");
+}
+
+// void	Application::sub()
+// {
+// 	IOperand *op1;
+// 	IOperand *op2;
+
+// 	if (stack.size() >= 2)
+// 	{
+// 		op2 = stack.top();
+// 		stack.pop();
+// 		op1 = stack.top();
+// 		stack.pop();
+
+// 		stack.push(op1 - op2);
+// 	}
+// 	else
+// 		throw std::logic_error("Invalid quantity of operands");
+// }
+
+// void	Application::mul()
+// {
+// 	IOperand *op1;
+// 	IOperand *op2;
+
+// 	if (stack.size() >= 2)
+// 	{
+// 		op2 = stack.top();
+// 		stack.pop();
+// 		op1 = stack.top();
+// 		stack.pop();
+
+// 		stack.push(op1 * op2);
+// 	}
+// 	else
+// 		throw std::logic_error("Invalid quantity of operands");
+// }

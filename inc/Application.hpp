@@ -32,6 +32,10 @@ class Application
 
 	void	push();
 	void	pop();
+	void	dump();
+	void	add();
+	// void	sub();
+	// void	mul();
 public:
 	Application();
 	~Application();

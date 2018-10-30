@@ -21,19 +21,19 @@ public:
 	// Operand & operator=(Operand const& other)
 	// {}
 
-	Operand(T operandVal, eOperandType operandType)
+	Operand(T operandVal, eOperandType operandType, std::string const & operandStringVal)
 	:	numericValue(operandVal),
-		type(operandType)
-		// ,
-		// stringValue(boost::lexical_cast<std::string>(operandVal))
+		type(operandType),
+		stringValue(operandStringVal)
 	{}
 
 	~Operand()
 	{}
 
+	//	undefined behaviour while swapping them within enumeration.
 	int				getPrecision( void ) const
 	{
-		return 0;
+		return (type);
 	}
 
 	eOperandType	getType( void ) const
@@ -43,8 +43,24 @@ public:
 
 	IOperand const * operator+( IOperand const & rhs ) const
 	{
-		(void)rhs;
-		return NULL;
+		T	tmpVal;
+
+		try {
+			if (this->getPrecision() >= rhs.getPrecision())
+			{
+				tmpVal = numerical_cast<T>(numericValue + lexical_cast<T>(rhs.toString()));
+			}
+			else
+			{
+				
+			}
+		} catch(boost::numeric_undeflow & e) {
+			throw std::logic_error("Underflow exception");
+		} catch(boost::numeric_overflow & e) {
+			throw std::logic_error("Overflow exception");
+		}
+
+		return ();
 	}
 
 	IOperand const * operator-( IOperand const & rhs ) const
@@ -73,7 +89,7 @@ public:
 
 	std::string const & toString( void ) const
 	{
-		return boost::lexical_cast<std::string>(numericValue);
+		return stringValue;
 	}
 };
 
