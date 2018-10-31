@@ -16,9 +16,10 @@
 
 class Application
 {
-	std::map<std::string, void (Application::*)()>	commands;
 	bool											flagVerbose;
 	boost::regex									regExp;
+	std::map<std::string, void (Application::*)()>	commands;
+	std::map<std::string, eOperandType>				types;
 	std::vector<std::string>						stringList;
 	std::map<size_t, boost::smatch>					tokens;
 	std::list<std::string>							errors;
@@ -30,12 +31,16 @@ class Application
 	void								readStream(std::istream & stream, bool flagReadFromSTDIN);
 	void								execute();
 
-	void	push();
-	void	pop();
-	void	dump();
-	void	add();
-	// void	sub();
-	// void	mul();
+	void	pushHandler();
+	void	popHandler();
+	void	dumpHandler();
+	void	addHandler();
+	void	subHandler();
+	void	mulHandler();
+	void	divHandler();
+	void	modHandler();
+	void	assertHandler();
+	void	printHandler();
 public:
 	Application();
 	~Application();

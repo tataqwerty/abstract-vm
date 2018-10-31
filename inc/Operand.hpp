@@ -7,7 +7,6 @@
 template<typename T>
 class Operand : public IOperand
 {
-	T				numericValue;
 	eOperandType	type;
 	std::string		stringValue;
 
@@ -21,16 +20,15 @@ public:
 	// Operand & operator=(Operand const& other)
 	// {}
 
-	Operand(T operandVal, eOperandType operandType, std::string const & operandStringVal)
-	:	numericValue(operandVal),
-		type(operandType),
-		stringValue(operandStringVal)
+	Operand(eOperandType operandType, T operandValue)
+	:	type(operandType),
+		stringValue(boost::lexical_cast<std::string>(static_cast<long double>(operandValue)))
 	{}
 
 	~Operand()
 	{}
 
-	//	undefined behaviour while swapping them within enumeration.
+	//	undefined behaviour while swapping types within enumeration.
 	int				getPrecision( void ) const
 	{
 		return (type);
@@ -43,48 +41,113 @@ public:
 
 	IOperand const * operator+( IOperand const & rhs ) const
 	{
-		T	tmpVal;
-
 		try {
 			if (this->getPrecision() >= rhs.getPrecision())
 			{
-				tmpVal = numerical_cast<T>(numericValue + lexical_cast<T>(rhs.toString()));
+				T	tmpVal;
+
+				tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) + std::stold(rhs.toString()));
+				return (new Operand<T>(this->getType(), tmpVal));
 			}
 			else
 			{
-				
+				return (rhs + *this);
 			}
-		} catch(boost::numeric_undeflow & e) {
-			throw std::logic_error("Underflow exception");
-		} catch(boost::numeric_overflow & e) {
-			throw std::logic_error("Overflow exception");
+		} catch(boost::numeric::negative_overflow & e) {
+			throw std::logic_error("Negative overflow");
+		} catch(boost::numeric::positive_overflow & e) {
+			throw std::logic_error("Positive overflow");
 		}
-
-		return ();
 	}
 
 	IOperand const * operator-( IOperand const & rhs ) const
 	{
-		(void)rhs;
-		return NULL;
+		try {
+			if (this->getPrecision() >= rhs.getPrecision())
+			{
+				T	tmpVal;
+
+				tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) - std::stold(rhs.toString()));
+				return (new Operand<T>(this->getType(), tmpVal));
+			}
+			else
+			{
+				return (rhs + *this);
+			}
+		} catch(boost::numeric::negative_overflow & e) {
+			throw std::logic_error("Negative overflow");
+		} catch(boost::numeric::positive_overflow & e) {
+			throw std::logic_error("Positive overflow");
+		}
 	}
 
 	IOperand const * operator*( IOperand const & rhs ) const
 	{
-		(void)rhs;
-		return NULL;
+		try {
+			if (this->getPrecision() >= rhs.getPrecision())
+			{
+				T	tmpVal;
+
+				tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) * std::stold(rhs.toString()));
+				return (new Operand<T>(this->getType(), tmpVal));
+			}
+			else
+			{
+				return (rhs + *this);
+			}
+		} catch(boost::numeric::negative_overflow & e) {
+			throw std::logic_error("Negative overflow");
+		} catch(boost::numeric::positive_overflow & e) {
+			throw std::logic_error("Positive overflow");
+		}
 	}
 
 	IOperand const * operator/( IOperand const & rhs ) const
 	{
-		(void)rhs;
-		return NULL;
+		try {
+			if (this->getPrecision() >= rhs.getPrecision())
+			{
+				T	tmpVal;
+
+				if (std::stold(rhs.toString()) == 0)
+					throw std::logic_error("Divide by zero");
+				else
+					tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) / std::stold(rhs.toString()));
+				return (new Operand<T>(this->getType(), tmpVal));
+			}
+			else
+			{
+				return (rhs + *this);
+			}
+		} catch(boost::numeric::negative_overflow & e) {
+			throw std::logic_error("Negative overflow");
+		} catch(boost::numeric::positive_overflow & e) {
+			throw std::logic_error("Positive overflow");
+		}
 	}
 
 	IOperand const * operator%( IOperand const & rhs ) const
 	{
-		(void)rhs;
-		return NULL;
+		try {
+			if (this->getPrecision() >= rhs.getPrecision())
+			{
+				T	tmpVal;
+
+				if (std::stold(rhs.toString()) == 0)
+					throw std::logic_error("Modulo by zero");
+				else
+					tmpVal = boost::numeric_cast<T>(static_cast<long>(roundl(std::stold(this->toString()))) % static_cast<long>(roundl(std::stold(rhs.toString()))));
+				return (new Operand<T>(this->getType(), tmpVal));
+			}
+			else
+			{
+				return (rhs + *this);
+			}
+		} catch(boost::numeric::negative_overflow & e) {
+			throw std::logic_error("Negative overflow");
+		} catch(boost::numeric::positive_overflow & e) {
+			throw std::logic_error("Positive overflow");
+		}
 	}
 
 	std::string const & toString( void ) const

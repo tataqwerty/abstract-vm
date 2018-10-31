@@ -3,17 +3,27 @@
 void	Application::setFlagVerbose(bool value) { flagVerbose = value; }
 
 Application::Application()
-:	commands({
-		{"push", &Application::push},
-		{"pop", &Application::pop},
-		{"dump", &Application::dump},
-		{"add", &Application::add}
-		// ,
-		// {"sub", &Application::sub},
-		// {"mul", &Application::mul}
+:	flagVerbose(0),
+	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))\\s*$"),
+	commands({
+		{"push", &Application::pushHandler},
+		{"pop", &Application::popHandler},
+		{"dump", &Application::dumpHandler},
+		{"add", &Application::addHandler},
+		{"sub", &Application::subHandler},
+		{"mul", &Application::mulHandler},
+		{"div", &Application::divHandler},
+		{"mod", &Application::modHandler},
+		{"assert", &Application::assertHandler},
+		{"print", &Application::printHandler}
 	}),
-	flagVerbose(0),
-	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))\\s*$")
+	types({
+		{"int8", Int8},
+		{"int16", Int16},
+		{"int32", Int32},
+		{"float", Float},
+		{"double", Double}
+	})
 {}
 
 Application::~Application()
@@ -130,21 +140,14 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 ** COMMANDS
 */
 
-void	Application::push()
+void	Application::pushHandler()
 {
 	boost::smatch								token = tokens.begin()->second;
-	static std::map<std::string, eOperandType>	types = {
-		{"int8", Int8},
-		{"int16", Int16},
-		{"int32", Int32},
-		{"float", Float},
-		{"double", Double}
-	};
 
 	stack.push(operandFactory.createOperand(types[token["type"]], token["value"]));
 }
 
-void	Application::pop()
+void	Application::popHandler()
 {
 	if (!stack.empty())
 		stack.pop();
@@ -152,7 +155,7 @@ void	Application::pop()
 		throw std::logic_error("Pop on empty stack");
 }
 
-void	Application::dump()
+void	Application::dumpHandler()
 {
 	IterStack<const IOperand *>::iterator it = stack.end();
 
@@ -163,7 +166,7 @@ void	Application::dump()
 	}
 }
 
-void	Application::add()
+void	Application::addHandler()
 {
 	const IOperand *op1;
 	const IOperand *op2;
@@ -175,44 +178,110 @@ void	Application::add()
 		op1 = stack.top();
 		stack.pop();
 
-		stack.push(op1 + op2);
+		stack.push(*op1 + *op2);
 	}
 	else
 		throw std::logic_error("Invalid quantity of operands");
 }
 
-// void	Application::sub()
-// {
-// 	IOperand *op1;
-// 	IOperand *op2;
+void	Application::subHandler()
+{
+	const IOperand *op1;
+	const IOperand *op2;
 
-// 	if (stack.size() >= 2)
-// 	{
-// 		op2 = stack.top();
-// 		stack.pop();
-// 		op1 = stack.top();
-// 		stack.pop();
+	if (stack.size() >= 2)
+	{
+		op2 = stack.top();
+		stack.pop();
+		op1 = stack.top();
+		stack.pop();
 
-// 		stack.push(op1 - op2);
-// 	}
-// 	else
-// 		throw std::logic_error("Invalid quantity of operands");
-// }
+		stack.push(*op1 - *op2);
+	}
+	else
+		throw std::logic_error("Invalid quantity of operands");
+}
 
-// void	Application::mul()
-// {
-// 	IOperand *op1;
-// 	IOperand *op2;
+void	Application::mulHandler()
+{
+	const IOperand *op1;
+	const IOperand *op2;
 
-// 	if (stack.size() >= 2)
-// 	{
-// 		op2 = stack.top();
-// 		stack.pop();
-// 		op1 = stack.top();
-// 		stack.pop();
+	if (stack.size() >= 2)
+	{
+		op2 = stack.top();
+		stack.pop();
+		op1 = stack.top();
+		stack.pop();
 
-// 		stack.push(op1 * op2);
-// 	}
-// 	else
-// 		throw std::logic_error("Invalid quantity of operands");
-// }
+		stack.push(*op1 * *op2);
+	}
+	else
+		throw std::logic_error("Invalid quantity of operands");
+}
+
+void	Application::divHandler()
+{
+	const IOperand *op1;
+	const IOperand *op2;
+
+	if (stack.size() >= 2)
+	{
+		op2 = stack.top();
+		stack.pop();
+		op1 = stack.top();
+		stack.pop();
+
+		stack.push(*op1 / *op2);
+	}
+	else
+		throw std::logic_error("Invalid quantity of operands");
+}
+
+void	Application::modHandler()
+{
+	const IOperand *op1;
+	const IOperand *op2;
+
+	if (stack.size() >= 2)
+	{
+		op2 = stack.top();
+		stack.pop();
+		op1 = stack.top();
+		stack.pop();
+
+		stack.push(*op1 % *op2);
+	}
+	else
+		throw std::logic_error("Invalid quantity of operands");
+}
+
+void	Application::assertHandler()
+{
+	boost::smatch	token = tokens.begin()->second;
+
+	if (stack.size())
+	{
+
+		if (token["value"] != stack.top()->toString() || types[token["type"]] != stack.top()->getType())
+			throw std::logic_error("Values are not equal");
+
+	}
+	else
+		throw std::logic_error("There are no elements in stack");
+}
+
+void	Application::printHandler()
+{
+	if (stack.size())
+	{
+
+		if (stack.top()->getType() == types["int8"])
+			std::cout << boost::numeric_cast<char>(std::stoi(stack.top()->toString())) << std::endl;
+		else
+			throw std::logic_error("Values are not equal");
+
+	}
+	else
+		throw std::logic_error("There are no elements in stack");
+}

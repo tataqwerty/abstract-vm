@@ -25,18 +25,19 @@ endif
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(BOOST_LIB)
+	@$(CC) $(OBJ) -o $(NAME) $(BOOST_LIB)
 	@grep -xq $(NAME) .gitignore || echo $(NAME) >> .gitignore
+	@echo $(NAME) compiled!
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
 	@mkdir -p $(OBJ_DIR)
-	$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -I $(BOOST_INC) -std=c++11
+	@$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -I $(BOOST_INC) -std=c++11
 
 clean:
-	rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME) 
+	@rm -f $(NAME) 
 
 re: fclean all
 
