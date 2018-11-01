@@ -1,16 +1,20 @@
-#ifndef ITERSTACK_H__
-#define ITERSTACK_H__
+#ifndef ITERSTACK_HPP
+#define ITERSTACK_HPP
 
 #include <stack>
+#include <iostream>
 
 template<typename T>
 class IterStack : public std::stack<T>
 {
+	typedef typename std::stack<T>::container_type::reference		reference;
+	typedef typename std::stack<T>::container_type::const_reference	const_reference;
+
 	IterStack(IterStack const& other);
 	IterStack & operator=(IterStack const& other);
 public:
-	typedef typename std::stack<T>::container_type::iterator iterator;
-	typedef typename std::stack<T>::container_type::const_iterator const_iterator;
+	typedef typename std::stack<T>::container_type::iterator		iterator;
+	typedef typename std::stack<T>::container_type::const_iterator	const_iterator;
 	
 	IterStack()
 	{}
@@ -35,6 +39,27 @@ public:
 	const_iterator end() const
 	{
 		return this->c.end();
+	}
+
+	void	pop()
+	{
+		if (this->empty())
+			throw std::logic_error("Stack is empty!");
+		this->c.pop_back();
+	}
+
+	reference top()
+	{
+		if (this->empty())
+			throw std::logic_error("Stack is empty!");
+		return (this->c.back());
+	}
+
+	const_reference top() const
+	{
+		if (this->empty())
+			throw std::logic_error("Stack is empty!");
+		return (this->c.back());
 	}
 };
 

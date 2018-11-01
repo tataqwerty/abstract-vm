@@ -16,9 +16,15 @@
 
 class Application
 {
+	typedef struct				s_cmd
+	{
+		std::string			name;
+		void (Application::*function)();
+	}							t_cmd;
+
 	bool											flagVerbose;
 	boost::regex									regExp;
-	std::map<std::string, void (Application::*)()>	commands;
+	std::vector<t_cmd>								commands;
 	std::map<std::string, eOperandType>				types;
 
 	std::vector<std::string>						stringList;

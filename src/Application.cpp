@@ -6,16 +6,16 @@ Application::Application()
 :	flagVerbose(0),
 	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))\\s*$"),
 	commands({
-		{"push", &Application::pushHandler},
-		{"pop", &Application::popHandler},
-		{"dump", &Application::dumpHandler},
-		{"add", &Application::addHandler},
-		{"sub", &Application::subHandler},
-		{"mul", &Application::mulHandler},
-		{"div", &Application::divHandler},
-		{"mod", &Application::modHandler},
-		{"assert", &Application::assertHandler},
-		{"print", &Application::printHandler}
+		{.name = "push", .function = &Application::pushHandler},
+		{.name = "pop", .function = &Application::popHandler},
+		{.name = "dump", .function = &Application::dumpHandler},
+		{.name = "add", .function = &Application::addHandler},
+		{.name = "sub", .function = &Application::subHandler},
+		{.name = "mul", .function = &Application::mulHandler},
+		{.name = "div", .function = &Application::divHandler},
+		{.name = "mod", .function = &Application::modHandler},
+		{.name = "assert", .function = &Application::assertHandler},
+		{.name = "print", .function = &Application::printHandler}
 	}),
 	types({
 		{"int8", Int8},
@@ -54,7 +54,7 @@ void	Application::readStream(std::istream & stream, bool flagReadFromSTDIN)
 
 std::pair<size_t, boost::smatch>	Application::tokenize(std::string & str, size_t line)
 {
-	boost::smatch						m;
+	boost::smatch	m;
 
 	if (boost::regex_match(str, m, regExp))
 		return std::make_pair(line, m);
@@ -87,31 +87,32 @@ void	Application::lexer()
 
 void	Application::execute()
 {
-	std::map<size_t, boost::smatch>::iterator	token;
+	boost::smatch	token;
+	size_t			line;
 
 	while (!tokens.empty())
 	{
-		token = tokens.begin();
+		token	= tokens.begin()->second;
+		line	= tokens.begin()->first;
 
 		// token.command.name == exit, to check after loop that the last command executed is exit.
-		if (token->second["cmd"] == "exit")
+		if (token["cmd"] == "exit")
 			break ;
 
-		for (std::pair<std::string, void (Application::*)()> command : commands)
+		for (t_cmd &command : commands)
 		{
-			// command.name == token.command.name, execute it
-			if (command.first == token->second["cmd"])
+			if (command.name == token["cmd"])
 			{
 				try {
-					(this->*(command.second))();
+					(this->*(command.function))();
 				} catch(std::exception & e) {
-					throw std::logic_error("Line " + std::to_string(token->first) + " : Error : " + e.what());
+					throw std::logic_error("Line " + std::to_string(line) + " : Error : " + e.what());
 				}
 				break ;
 			}
 		}
 
-		tokens.erase(token);
+		tokens.erase(tokens.begin());
 	}
 
 	//	there are must be token with exit command.
@@ -151,14 +152,9 @@ void	Application::popHandler()
 {
 	const IOperand * tmp;
 
-	if (!stack.empty())
-	{
-		tmp = stack.top();
-		stack.pop();
-		delete tmp;
-	}
-	else
-		throw std::logic_error("Pop on empty stack");
+	tmp = stack.top();
+	stack.pop();
+	delete tmp;
 }
 
 void	Application::dumpHandler()
@@ -312,36 +308,21 @@ void	Application::assertHandler()
 	boost::smatch	token = tokens.begin()->second;
 	const IOperand	*tmp;
 
-	if (!stack.empty())
-	{
-		try {
-			tmp = operandFactory.createOperand(types[token["type"]], token["value"]);
-			
-			if (!(*tmp == *stack.top()))
-				throw std::logic_error("Values are not equal");
-
-			delete tmp;
-		} catch(std::exception & e) {
-			delete tmp;
-			throw;
-		};
-
+	tmp = operandFactory.createOperand(types[token["type"]], token["value"]);
+	try {
+		if (!(*tmp == *stack.top()))
+			throw std::logic_error("Values are not equal");
+	} catch(std::exception & e) {
+		delete tmp;
+		throw;
 	}
-	else
-		throw std::logic_error("There are no elements in stack");
+	delete tmp;
 }
 
 void	Application::printHandler()
 {
-	if (!stack.empty())
-	{
-
-		if (stack.top()->getType() == types["int8"])
-			std::cout << boost::numeric_cast<char>(std::stoi(stack.top()->toString())) << std::endl;
-		else
-			throw std::logic_error("Values are not equal");
-
-	}
+	if (stack.top()->getType() == types["int8"])
+		std::cout << boost::numeric_cast<char>(std::stoi(stack.top()->toString())) << std::endl;
 	else
-		throw std::logic_error("There are no elements in stack");
+		throw std::logic_error("Values are not equal");
 }
