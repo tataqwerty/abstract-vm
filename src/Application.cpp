@@ -114,7 +114,7 @@ void	Application::execute()
 		tokens.erase(token);
 	}
 
-	//	there is must be token with exit command.
+	//	there are must be token with exit command.
 	if (tokens.empty())
 		throw std::logic_error("Error : no exit command.");
 }
@@ -137,20 +137,26 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 }
 
 /*
-** COMMANDS
+** ----- COMMANDS -----
 */
 
 void	Application::pushHandler()
 {
-	boost::smatch								token = tokens.begin()->second;
+	boost::smatch	token = tokens.begin()->second;
 
 	stack.push(operandFactory.createOperand(types[token["type"]], token["value"]));
 }
 
 void	Application::popHandler()
 {
+	const IOperand * tmp;
+
 	if (!stack.empty())
+	{
+		tmp = stack.top();
 		stack.pop();
+		delete tmp;
+	}
 	else
 		throw std::logic_error("Pop on empty stack");
 }
@@ -177,8 +183,17 @@ void	Application::addHandler()
 		stack.pop();
 		op1 = stack.top();
 		stack.pop();
+ 
+		try {
+			stack.push(*op1 + *op2);
+		} catch(...) {
+			delete op1;
+			delete op2;
+			throw;
+		}
 
-		stack.push(*op1 + *op2);
+		delete op1;
+		delete op2;
 	}
 	else
 		throw std::logic_error("Invalid quantity of operands");
@@ -196,7 +211,16 @@ void	Application::subHandler()
 		op1 = stack.top();
 		stack.pop();
 
-		stack.push(*op1 - *op2);
+		try {
+			stack.push(*op1 - *op2);
+		} catch(...) {
+			delete op1;
+			delete op2;
+			throw;
+		}
+
+		delete op1;
+		delete op2;
 	}
 	else
 		throw std::logic_error("Invalid quantity of operands");
@@ -214,7 +238,16 @@ void	Application::mulHandler()
 		op1 = stack.top();
 		stack.pop();
 
-		stack.push(*op1 * *op2);
+		try {
+			stack.push(*op1 * *op2);
+		} catch(...) {
+			delete op1;
+			delete op2;
+			throw;
+		}
+
+		delete op1;
+		delete op2;
 	}
 	else
 		throw std::logic_error("Invalid quantity of operands");
@@ -232,7 +265,16 @@ void	Application::divHandler()
 		op1 = stack.top();
 		stack.pop();
 
-		stack.push(*op1 / *op2);
+		try {
+			stack.push(*op1 / *op2);
+		} catch(...) {
+			delete op1;
+			delete op2;
+			throw;
+		}
+
+		delete op1;
+		delete op2;
 	}
 	else
 		throw std::logic_error("Invalid quantity of operands");
@@ -250,7 +292,16 @@ void	Application::modHandler()
 		op1 = stack.top();
 		stack.pop();
 
-		stack.push(*op1 % *op2);
+		try {
+			stack.push(*op1 % *op2);
+		} catch(...) {
+			delete op1;
+			delete op2;
+			throw;
+		}
+
+		delete op1;
+		delete op2;
 	}
 	else
 		throw std::logic_error("Invalid quantity of operands");
@@ -259,12 +310,21 @@ void	Application::modHandler()
 void	Application::assertHandler()
 {
 	boost::smatch	token = tokens.begin()->second;
+	const IOperand	*tmp;
 
-	if (stack.size())
+	if (!stack.empty())
 	{
+		try {
+			tmp = operandFactory.createOperand(types[token["type"]], token["value"]);
+			
+			if (!(*tmp == *stack.top()))
+				throw std::logic_error("Values are not equal");
 
-		if (token["value"] != stack.top()->toString() || types[token["type"]] != stack.top()->getType())
-			throw std::logic_error("Values are not equal");
+			delete tmp;
+		} catch(std::exception & e) {
+			delete tmp;
+			throw;
+		};
 
 	}
 	else
@@ -273,7 +333,7 @@ void	Application::assertHandler()
 
 void	Application::printHandler()
 {
-	if (stack.size())
+	if (!stack.empty())
 	{
 
 		if (stack.top()->getType() == types["int8"])

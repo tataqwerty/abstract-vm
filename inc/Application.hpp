@@ -20,6 +20,7 @@ class Application
 	boost::regex									regExp;
 	std::map<std::string, void (Application::*)()>	commands;
 	std::map<std::string, eOperandType>				types;
+
 	std::vector<std::string>						stringList;
 	std::map<size_t, boost::smatch>					tokens;
 	std::list<std::string>							errors;

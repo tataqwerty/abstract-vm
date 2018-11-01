@@ -72,7 +72,7 @@ public:
 			}
 			else
 			{
-				return (rhs + *this);
+				return (rhs - *this);
 			}
 		} catch(boost::numeric::negative_overflow & e) {
 			throw std::logic_error("Negative overflow");
@@ -93,7 +93,7 @@ public:
 			}
 			else
 			{
-				return (rhs + *this);
+				return (rhs * *this);
 			}
 		} catch(boost::numeric::negative_overflow & e) {
 			throw std::logic_error("Negative overflow");
@@ -117,7 +117,7 @@ public:
 			}
 			else
 			{
-				return (rhs + *this);
+				return (rhs / *this);
 			}
 		} catch(boost::numeric::negative_overflow & e) {
 			throw std::logic_error("Negative overflow");
@@ -141,13 +141,18 @@ public:
 			}
 			else
 			{
-				return (rhs + *this);
+				return (rhs % *this);
 			}
 		} catch(boost::numeric::negative_overflow & e) {
 			throw std::logic_error("Negative overflow");
 		} catch(boost::numeric::positive_overflow & e) {
 			throw std::logic_error("Positive overflow");
 		}
+	}
+
+	bool	operator==(IOperand const & rhs) const
+	{
+		return (this->toString() == rhs.toString()) && (this->getType() == rhs.getType());
 	}
 
 	std::string const & toString( void ) const
