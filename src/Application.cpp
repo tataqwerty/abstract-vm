@@ -59,7 +59,7 @@ std::pair<size_t, boost::smatch>	Application::tokenize(std::string & str, size_t
 	if (boost::regex_match(str, m, regExp))
 		return std::make_pair(line, m);
 	else
-		throw std::logic_error("Line " + std::to_string(line) + " : Error : undefined token");
+		throw Exceptions::UndefinedTokenException();
 }
 
 void	Application::lexer()
@@ -72,7 +72,7 @@ void	Application::lexer()
 			try {
 				tokens.insert(tokenize(stringList[i], i + 1));
 			} catch(std::exception & e) {
-				errors.push_back(e.what());
+				errors.push_back("Line " + std::to_string(i + 1) + " Error : " +  e.what());
 
 				if (errors.size() >= 5 && !flagVerbose)
 				{
@@ -106,7 +106,7 @@ void	Application::execute()
 				try {
 					(this->*(command.function))();
 				} catch(std::exception & e) {
-					throw std::logic_error("Line " + std::to_string(line) + " : Error : " + e.what());
+					throw Exceptions::GeneralException("Line " + std::to_string(line) + " : Error : " + e.what());
 				}
 				break ;
 			}
@@ -117,7 +117,7 @@ void	Application::execute()
 
 	//	there are must be token with exit command.
 	if (tokens.empty())
-		throw std::logic_error("Error : no exit command.");
+		throw Exceptions::NoExitCMDException();
 }
 
 void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
@@ -192,7 +192,7 @@ void	Application::addHandler()
 		delete op2;
 	}
 	else
-		throw std::logic_error("Invalid quantity of operands");
+		throw Exceptions::InvalidOperandsQuantityException();
 }
 
 void	Application::subHandler()
@@ -219,7 +219,7 @@ void	Application::subHandler()
 		delete op2;
 	}
 	else
-		throw std::logic_error("Invalid quantity of operands");
+		throw Exceptions::InvalidOperandsQuantityException();
 }
 
 void	Application::mulHandler()
@@ -246,7 +246,7 @@ void	Application::mulHandler()
 		delete op2;
 	}
 	else
-		throw std::logic_error("Invalid quantity of operands");
+		throw Exceptions::InvalidOperandsQuantityException();
 }
 
 void	Application::divHandler()
@@ -273,7 +273,7 @@ void	Application::divHandler()
 		delete op2;
 	}
 	else
-		throw std::logic_error("Invalid quantity of operands");
+		throw Exceptions::InvalidOperandsQuantityException();
 }
 
 void	Application::modHandler()
@@ -300,7 +300,7 @@ void	Application::modHandler()
 		delete op2;
 	}
 	else
-		throw std::logic_error("Invalid quantity of operands");
+		throw Exceptions::InvalidOperandsQuantityException();
 }
 
 void	Application::assertHandler()
@@ -311,7 +311,7 @@ void	Application::assertHandler()
 	tmp = operandFactory.createOperand(types[token["type"]], token["value"]);
 	try {
 		if (!(*tmp == *stack.top()))
-			throw std::logic_error("Values are not equal");
+			throw Exceptions::NotEqualValuesException();
 	} catch(std::exception & e) {
 		delete tmp;
 		throw;
@@ -324,5 +324,5 @@ void	Application::printHandler()
 	if (stack.top()->getType() == types["int8"])
 		std::cout << boost::numeric_cast<char>(std::stoi(stack.top()->toString())) << std::endl;
 	else
-		throw std::logic_error("Values are not equal");
+		throw Exceptions::NotEqualValuesException();
 }

@@ -2,11 +2,24 @@
 #define ITERSTACK_HPP
 
 #include <stack>
-#include <iostream>
+#include <exception>
 
 template<typename T>
 class IterStack : public std::stack<T>
 {
+	class	EmptyStackException : std::exception
+	{
+	public:
+		EmptyStackException()
+		{}
+		~EmptyStackException()
+		{}
+		const char	*	what() const throw()
+		{
+			return ("Stack is empty!");
+		}
+	};
+
 	typedef typename std::stack<T>::container_type::reference		reference;
 	typedef typename std::stack<T>::container_type::const_reference	const_reference;
 
@@ -15,9 +28,10 @@ class IterStack : public std::stack<T>
 public:
 	typedef typename std::stack<T>::container_type::iterator		iterator;
 	typedef typename std::stack<T>::container_type::const_iterator	const_iterator;
-	
+
 	IterStack()
 	{}
+
 	~IterStack()
 	{}
 
@@ -44,21 +58,21 @@ public:
 	void	pop()
 	{
 		if (this->empty())
-			throw std::logic_error("Stack is empty!");
+			throw EmptyStackException();
 		this->c.pop_back();
 	}
 
 	reference top()
 	{
 		if (this->empty())
-			throw std::logic_error("Stack is empty!");
+			throw EmptyStackException();
 		return (this->c.back());
 	}
 
 	const_reference top() const
 	{
 		if (this->empty())
-			throw std::logic_error("Stack is empty!");
+			throw EmptyStackException();
 		return (this->c.back());
 	}
 };
