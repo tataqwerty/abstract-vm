@@ -3,7 +3,7 @@
 // ----- GeneralException -----
 
 Exceptions::GeneralException::GeneralException(std::string const & s)
-:	msg(s.c_str())
+:	msg(s)
 {}
 
 Exceptions::GeneralException::GeneralException(Exceptions::GeneralException const & other)
@@ -22,7 +22,7 @@ Exceptions::GeneralException::~GeneralException()
 
 const char * Exceptions::GeneralException::what() const throw()
 {
-	return (this->msg);
+	return (this->msg.c_str());
 }
 
 // ----- NotEqualValuesException -----
@@ -35,7 +35,7 @@ Exceptions::NotEqualValuesException::~NotEqualValuesException()
 
 const char * Exceptions::NotEqualValuesException::what() const throw()
 {
-	return ("Stack is empty!");
+	return ("Values are not equal!");
 }
 
 // ----- InvalidOperandsQuantityException -----
@@ -75,4 +75,17 @@ Exceptions::NoExitCMDException::~NoExitCMDException()
 const char * Exceptions::NoExitCMDException::what() const throw()
 {
 	return ("Error : no exit command!");
+}
+
+// ----- EmptyStackException -----
+
+Exceptions::EmptyStackException::EmptyStackException()
+{}
+
+Exceptions::EmptyStackException::~EmptyStackException()
+{}
+
+const char * Exceptions::EmptyStackException::what() const throw()
+{
+	return ("Stack is empty!");
 }

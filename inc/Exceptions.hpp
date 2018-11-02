@@ -9,7 +9,7 @@ class Exceptions
 public:
 	class	GeneralException : public std::exception
 	{
-		const char	*msg;
+		std::string msg;
 
 	public:
 		explicit GeneralException(std::string const & s);
@@ -48,6 +48,14 @@ public:
 	public:
 		NoExitCMDException();
 		~NoExitCMDException();
+		const char	*	what() const throw();
+	};
+
+	class	EmptyStackException : public std::exception
+	{
+	public:
+		EmptyStackException();
+		~EmptyStackException();
 		const char	*	what() const throw();
 	};
 };

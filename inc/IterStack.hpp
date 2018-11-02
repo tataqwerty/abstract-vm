@@ -3,28 +3,14 @@
 
 #include <stack>
 #include <exception>
+#include "Exceptions.hpp"
 
 template<typename T>
 class IterStack : public std::stack<T>
 {
-	class	EmptyStackException : std::exception
-	{
-	public:
-		EmptyStackException()
-		{}
-		~EmptyStackException()
-		{}
-		const char	*	what() const throw()
-		{
-			return ("Stack is empty!");
-		}
-	};
-
 	typedef typename std::stack<T>::container_type::reference		reference;
 	typedef typename std::stack<T>::container_type::const_reference	const_reference;
 
-	IterStack(IterStack const& other);
-	IterStack & operator=(IterStack const& other);
 public:
 	typedef typename std::stack<T>::container_type::iterator		iterator;
 	typedef typename std::stack<T>::container_type::const_iterator	const_iterator;
@@ -34,6 +20,17 @@ public:
 
 	~IterStack()
 	{}
+
+	IterStack(IterStack const& other)
+	{
+		*this = other;
+	}
+
+	IterStack & operator=(IterStack const& other)
+	{
+		this->c = other.c;
+		return *this;
+	}
 
 	iterator begin()
 	{
@@ -58,21 +55,21 @@ public:
 	void	pop()
 	{
 		if (this->empty())
-			throw EmptyStackException();
+			throw Exceptions::EmptyStackException();
 		this->c.pop_back();
 	}
 
 	reference top()
 	{
 		if (this->empty())
-			throw EmptyStackException();
+			throw Exceptions::EmptyStackException();
 		return (this->c.back());
 	}
 
 	const_reference top() const
 	{
 		if (this->empty())
-			throw EmptyStackException();
+			throw Exceptions::EmptyStackException();
 		return (this->c.back());
 	}
 };

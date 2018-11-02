@@ -14,11 +14,17 @@ public:
 	Operand()
 	{}
 
-	// Operand(Operand const& other)
-	// {}
+	Operand(Operand const& other)
+	{
+		*this = other;
+	}
 
-	// Operand & operator=(Operand const& other)
-	// {}
+	Operand & operator=(Operand const& other)
+	{
+		this->type = other.type;
+		this->stringValue = other.stringValue;
+		return *this;
+	}
 
 	Operand(eOperandType operandType, T operandValue)
 	:	type(operandType),

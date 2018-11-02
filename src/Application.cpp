@@ -26,6 +26,23 @@ Application::Application()
 	})
 {}
 
+Application::Application(Application const & other)
+:	Application()
+{
+	*this = other;
+}
+
+Application & Application::operator=(Application const & other)
+{
+	this->flagVerbose = other.flagVerbose;
+	this->stringList = other.stringList;
+	this->tokens = other.tokens;
+	this->errors = other.errors;
+	this->stack = other.stack;
+	this->operandFactory = other.operandFactory;
+	return *this;
+}
+
 Application::~Application()
 {}
 
