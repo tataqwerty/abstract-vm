@@ -72,7 +72,7 @@ void	Application::lexer()
 			try {
 				tokens.insert(tokenize(stringList[i], i + 1));
 			} catch(std::exception & e) {
-				errors.push_back("Line " + std::to_string(i + 1) + " Error : " +  e.what());
+				errors.push_back("Line " + std::to_string(i + 1) + " : Error : " +  e.what());
 
 				if (errors.size() >= 5 && !flagVerbose)
 				{
