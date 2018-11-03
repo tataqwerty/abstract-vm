@@ -89,3 +89,29 @@ const char * Exceptions::EmptyStackException::what() const throw()
 {
 	return ("Stack is empty!");
 }
+
+// ----- DivideByZeroException -----
+
+Exceptions::DivideByZeroException::DivideByZeroException()
+{}
+
+Exceptions::DivideByZeroException::~DivideByZeroException()
+{}
+
+const char * Exceptions::DivideByZeroException::what() const throw()
+{
+	return ("Divide by zero!");
+}
+
+// ----- ModuloByZeroException -----
+
+Exceptions::ModuloByZeroException::ModuloByZeroException()
+{}
+
+Exceptions::ModuloByZeroException::~ModuloByZeroException()
+{}
+
+const char * Exceptions::ModuloByZeroException::what() const throw()
+{
+	return ("Modulo by zero!");
+}

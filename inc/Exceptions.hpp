@@ -58,6 +58,22 @@ public:
 		~EmptyStackException();
 		const char	*	what() const throw();
 	};
+
+	class	DivideByZeroException : public std::exception
+	{
+	public:
+		DivideByZeroException();
+		~DivideByZeroException();
+		const char	*	what() const throw();
+	};
+
+	class	ModuloByZeroException : public std::exception
+	{
+	public:
+		ModuloByZeroException();
+		~ModuloByZeroException();
+		const char	*	what() const throw();
+	};
 };
 
 #endif

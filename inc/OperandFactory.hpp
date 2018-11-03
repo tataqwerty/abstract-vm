@@ -4,7 +4,7 @@
 # define COUNT_CMD 5
 
 #include "eOperandType.hpp"
-#include "Operand.hpp"
+#include "IOperand.hpp"
 #include <vector>
 
 class OperandFactory

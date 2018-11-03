@@ -2,6 +2,7 @@ OS=$(shell uname)
 CC=clang++
 FLAGS=-Wall -Wextra -Werror
 NAME=avm
+CPP_VERSION=11
 
 INC_DIR=./inc/
 SRC_DIR=./src/
@@ -31,7 +32,7 @@ $(NAME): $(OBJ)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -I $(BOOST_INC) -std=c++11
+	@$(CC) -c $(FLAGS) $< -o $@ -I $(INC_DIR) -I $(BOOST_INC) -std=c++$(CPP_VERSION)
 
 clean:
 	@rm -rf $(OBJ_DIR)

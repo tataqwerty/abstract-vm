@@ -3,32 +3,37 @@
 
 #include "IOperand.hpp"
 #include <boost/lexical_cast.hpp>
+#include "OperandFactory.hpp"
+#include "Exceptions.hpp"
 
 template<typename T>
 class Operand : public IOperand
 {
 	eOperandType	type;
-	std::string		stringValue;
+	std::string		value;
+	OperandFactory	operandFactory;
 
 public:
 	Operand()
 	{}
 
 	Operand(Operand const& other)
-	{
-		*this = other;
-	}
+	:	type(other.type),
+		value(other.alue),
+		operandFactory(OperandFactory())
+	{}
 
 	Operand & operator=(Operand const& other)
 	{
 		this->type = other.type;
-		this->stringValue = other.stringValue;
+		this->value = other.value;
 		return *this;
 	}
 
-	Operand(eOperandType operandType, T operandValue)
+	Operand(eOperandType operandType, std::string const & operandValue)
 	:	type(operandType),
-		stringValue(boost::lexical_cast<std::string>(static_cast<long double>(operandValue)))
+		value(boost::lexical_cast<std::string>(convert(operandValue))),
+		operandFactory(OperandFactory())
 	{}
 
 	~Operand()
@@ -45,115 +50,112 @@ public:
 		return (type);
 	}
 
+	long double	convert(std::string const & s) const
+	{
+		return (boost::numeric_cast<T>(std::stold(s)));	 //	throw exception happens here
+	}
+
 	IOperand const * operator+( IOperand const & rhs ) const
 	{
-		try {
-			if (this->getPrecision() >= rhs.getPrecision())
-			{
-				T	tmpVal;
+		eOperandType	newOperandType;
+		std::string		newOperandValue;
 
-				tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) + std::stold(rhs.toString()));
-				return (new Operand<T>(this->getType(), tmpVal));
-			}
-			else
-			{
-				return (rhs + *this);
-			}
-		} catch(boost::numeric::negative_overflow & e) {
-			throw std::logic_error("Negative overflow");
-		} catch(boost::numeric::positive_overflow & e) {
-			throw std::logic_error("Positive overflow");
+		if (this->getPrecision() >= rhs.getPrecision())
+		{
+			newOperandType = this->getType();
+			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) + this->convert(rhs.toString()));
 		}
+		else
+		{
+			newOperandType = rhs.getType();
+			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) + rhs.convert(rhs.toString()));
+		}
+
+		return (operandFactory.createOperand(newOperandType, newOperandValue));
 	}
 
 	IOperand const * operator-( IOperand const & rhs ) const
 	{
-		try {
-			if (this->getPrecision() >= rhs.getPrecision())
-			{
-				T	tmpVal;
+		eOperandType	newOperandType;
+		std::string		newOperandValue;
 
-				tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) - std::stold(rhs.toString()));
-				return (new Operand<T>(this->getType(), tmpVal));
-			}
-			else
-			{
-				return (rhs - *this);
-			}
-		} catch(boost::numeric::negative_overflow & e) {
-			throw std::logic_error("Negative overflow");
-		} catch(boost::numeric::positive_overflow & e) {
-			throw std::logic_error("Positive overflow");
+		if (this->getPrecision() >= rhs.getPrecision())
+		{
+			newOperandType = this->getType();
+			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) - this->convert(rhs.toString()));
 		}
+		else
+		{
+			newOperandType = rhs.getType();
+			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) - rhs.convert(rhs.toString()));
+		}
+
+		return (operandFactory.createOperand(newOperandType, newOperandValue));
 	}
 
 	IOperand const * operator*( IOperand const & rhs ) const
 	{
-		try {
-			if (this->getPrecision() >= rhs.getPrecision())
-			{
-				T	tmpVal;
+		eOperandType	newOperandType;
+		std::string		newOperandValue;
 
-				tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) * std::stold(rhs.toString()));
-				return (new Operand<T>(this->getType(), tmpVal));
-			}
-			else
-			{
-				return (rhs * *this);
-			}
-		} catch(boost::numeric::negative_overflow & e) {
-			throw std::logic_error("Negative overflow");
-		} catch(boost::numeric::positive_overflow & e) {
-			throw std::logic_error("Positive overflow");
+		if (this->getPrecision() >= rhs.getPrecision())
+		{
+			newOperandType = this->getType();
+			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) * this->convert(rhs.toString()));
 		}
+		else
+		{
+			newOperandType = rhs.getType();
+			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) * rhs.convert(rhs.toString()));
+		}
+
+		return (operandFactory.createOperand(newOperandType, newOperandValue));
 	}
 
 	IOperand const * operator/( IOperand const & rhs ) const
 	{
-		try {
-			if (this->getPrecision() >= rhs.getPrecision())
-			{
-				T	tmpVal;
+		eOperandType	newOperandType;
+		std::string		newOperandValue;
 
-				if (std::stold(rhs.toString()) == 0)
-					throw std::logic_error("Divide by zero");
-				else
-					tmpVal = boost::numeric_cast<T>(std::stold(this->toString()) / std::stold(rhs.toString()));
-				return (new Operand<T>(this->getType(), tmpVal));
-			}
-			else
-			{
-				return (rhs / *this);
-			}
-		} catch(boost::numeric::negative_overflow & e) {
-			throw std::logic_error("Negative overflow");
-		} catch(boost::numeric::positive_overflow & e) {
-			throw std::logic_error("Positive overflow");
+		if (this->getPrecision() >= rhs.getPrecision())
+		{
+			newOperandType = this->getType();
+			if (this->convert(rhs.toString()) == 0)
+				throw Exceptions::DivideByZeroException();
+			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) / this->convert(rhs.toString()));
 		}
+		else
+		{
+			newOperandType = rhs.getType();
+			if (rhs.convert(rhs.toString()) == 0)
+				throw Exceptions::DivideByZeroException();
+			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) / rhs.convert(rhs.toString()));
+		}
+
+		return (operandFactory.createOperand(newOperandType, newOperandValue));
 	}
 
 	IOperand const * operator%( IOperand const & rhs ) const
 	{
-		try {
-			if (this->getPrecision() >= rhs.getPrecision())
-			{
-				T	tmpVal;
+		eOperandType	newOperandType;
+		std::string		newOperandValue;
 
-				if (std::stold(rhs.toString()) == 0)
-					throw std::logic_error("Modulo by zero");
-				else
-					tmpVal = boost::numeric_cast<T>(static_cast<long>(roundl(std::stold(this->toString()))) % static_cast<long>(roundl(std::stold(rhs.toString()))));
-				return (new Operand<T>(this->getType(), tmpVal));
-			}
-			else
-			{
-				return (rhs % *this);
-			}
-		} catch(boost::numeric::negative_overflow & e) {
-			throw std::logic_error("Negative overflow");
-		} catch(boost::numeric::positive_overflow & e) {
-			throw std::logic_error("Positive overflow");
+		if (this->getPrecision() >= rhs.getPrecision())
+		{
+			newOperandType = this->getType();
+			if (this->convert(rhs.toString()) == 0)
+				throw Exceptions::ModuloByZeroException();
+			newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(this->convert(this->toString()))) % static_cast<long>(roundl(this->convert(rhs.toString()))));
 		}
+		else
+		{
+			newOperandType = rhs.getType();
+			if (rhs.convert(rhs.toString()) == 0)
+				throw Exceptions::ModuloByZeroException();
+			newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(rhs.convert(this->toString()))) % static_cast<long>(roundl(rhs.convert(rhs.toString()))));
+		}
+
+		return (operandFactory.createOperand(newOperandType, newOperandValue));
 	}
 
 	bool	operator==(IOperand const & rhs) const
@@ -163,7 +165,7 @@ public:
 
 	std::string const & toString( void ) const
 	{
-		return stringValue;
+		return value;
 	}
 };
 

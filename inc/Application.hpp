@@ -2,7 +2,6 @@
 #define APPLICATION_HPP
 
 #include "OperandFactory.hpp"
-#include "IOperand.hpp"
 #include "IterStack.hpp"
 #include "Exceptions.hpp"
 #include <errno.h>

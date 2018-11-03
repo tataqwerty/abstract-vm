@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include "Operand.hpp"
 
 void	Application::setFlagVerbose(bool value) { flagVerbose = value; }
 
