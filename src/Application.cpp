@@ -55,7 +55,7 @@ void	Application::readStream(std::istream & stream, bool flagReadFromSTDIN)
 
 	while (std::getline(stream, buffer))
 	{
-		//	end of input from stdin
+		/* end of input when read from stdin */
 		if (flagReadFromSTDIN && buffer == END_OF_STDIN)
 			break ;
 		stringList.push_back(buffer);
@@ -79,17 +79,15 @@ bool	Application::lexer()
 
 	for (size_t i = 0; i < stringList.size(); i++)
 	{
-		//	if first character of a string is not a ';'
-		if (!stringList[i].empty() && stringList[i][0] != COMMENT_SYMBOL)	//	kostil
+		/* if first character of a string is not a ';' */
+		if (!stringList[i].empty() && stringList[i][0] != COMMENT_SYMBOL) /* kostil */
 		{
-
 			try {
 				tokens.insert(tokenize(stringList[i], i + 1));
 			} catch(std::exception & e) {
 				std::cout << "Line " + std::to_string(i + 1) + " : Error : " +  e.what() + " -> " + stringList[i] << std::endl;
 				error = 1;
 			}
-
 		}
 	}
 
@@ -103,10 +101,11 @@ void	Application::execute()
 
 	while (!tokens.empty())
 	{
+		/* get first element of tokens */
 		token	= tokens.begin()->second;
 		line	= tokens.begin()->first;
 
-		// token.command.name == exit, to check after loop that the last command executed is exit.
+		/* token.command.name == exit; to check after loop that the last executed command is exit */
 		if (token["cmd"] == "exit")
 			break ;
 
@@ -123,10 +122,11 @@ void	Application::execute()
 			}
 		}
 
+		/* after processing token, delete this token */
 		tokens.erase(tokens.begin());
 	}
 
-	//	there are must be token with exit command.
+	/* there are must be token with exit command */
 	if (tokens.empty())
 		throw Exceptions::NoExitCMD();
 }
@@ -135,7 +135,6 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 {
 	tokens.erase(tokens.begin(), tokens.end());
 	stringList.erase(stringList.begin(), stringList.end());
-
 	while (!stack.empty())
 	{
 		delete stack.top();
@@ -143,12 +142,16 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 	}
 
 	readStream(stream, flagReadFromSTDIN);
+
+	/* if error occurs, won't execute commands */
 	if (lexer())
 		execute();
 }
 
 /*
 ** ----- COMMANDS -----
+**
+** access to token happens by getting the first element of tokens
 */
 
 void	Application::pushHandler()

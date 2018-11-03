@@ -2,6 +2,10 @@
 #include <sys/stat.h>
 #include "errno.h"
 
+/*
+** @param fileStat - to check whether file is a directory
+*/
+
 int main(int ac, char *av[])
 {
 	Application					app;

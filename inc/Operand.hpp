@@ -61,20 +61,22 @@ public:
 		}
 	}
 
-	IOperand const *	basicOperation(IOperand const & left, IOperand const & right, long double (*f)(long double, long double)) const
+	IOperand const *	dispatcherOperators(IOperand const & left, IOperand const & right, long double (*basicOperation)(long double, long double)) const
 	{
 		eOperandType	newOperandType;
 		std::string		newOperandValue;
 
+		/* convert in type of left operand */
 		if (left.getPrecision() >= right.getPrecision())
 		{
 			newOperandType = left.getType();
-			newOperandValue = boost::lexical_cast<std::string>(f(left.convert(left.toString()), left.convert(right.toString())));
+			newOperandValue = boost::lexical_cast<std::string>(basicOperation(left.convert(left.toString()), left.convert(right.toString())));
 		}
+		/* convert in type of right operand */
 		else
 		{
 			newOperandType = right.getType();
-			newOperandValue = boost::lexical_cast<std::string>(f(right.convert(left.toString()), right.convert(right.toString())));
+			newOperandValue = boost::lexical_cast<std::string>(basicOperation(right.convert(left.toString()), right.convert(right.toString())));
 		}
 
 		return (operandFactory.createOperand(newOperandType, newOperandValue));
@@ -86,7 +88,7 @@ public:
 			return leftVal + rightVal;
 		};
 
-		return basicOperation(*this, rhs, f);
+		return dispatcherOperators(*this, rhs, f);
 	}
 
 	IOperand const * operator-( IOperand const & rhs ) const
@@ -95,7 +97,7 @@ public:
 			return leftVal - rightVal;
 		};
 
-		return basicOperation(*this, rhs, f);
+		return dispatcherOperators(*this, rhs, f);
 	}
 
 	IOperand const * operator*( IOperand const & rhs ) const
@@ -104,7 +106,7 @@ public:
 			return leftVal * rightVal;
 		};
 
-		return basicOperation(*this, rhs, f);
+		return dispatcherOperators(*this, rhs, f);
 	}
 
 	IOperand const * operator/( IOperand const & rhs ) const
@@ -115,7 +117,7 @@ public:
 			return leftVal / rightVal;
 		};
 
-		return basicOperation(*this, rhs, f);
+		return dispatcherOperators(*this, rhs, f);
 	}
 
 	IOperand const * operator%( IOperand const & rhs ) const
@@ -126,7 +128,7 @@ public:
 			return fmod(leftVal, rightVal);
 		};
 
-		return basicOperation(*this, rhs, f);
+		return dispatcherOperators(*this, rhs, f);
 	}
 
 	bool	operator==(IOperand const & rhs) const

@@ -12,7 +12,7 @@ public:
 
 	virtual	long double			convert( std::string const & s ) const = 0;
 
-	virtual IOperand const *	basicOperation( IOperand const & left , IOperand const & right, long double (*f)(long double, long double) ) const = 0;
+	virtual IOperand const *	dispatcherOperators( IOperand const & left , IOperand const & right, long double (*basicOperation)(long double, long double) ) const = 0;
 
 	virtual IOperand const *	operator+( IOperand const & rhs ) const = 0; // Sum
 	virtual IOperand const *	operator-( IOperand const & rhs ) const = 0; // Difference

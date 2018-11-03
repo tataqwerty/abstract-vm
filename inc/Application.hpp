@@ -11,11 +11,11 @@
 
 #define READ_FROM_STDIN			1
 #define END_OF_STDIN			";;"
-#define VERBOSE_FLAG_SIGNATURE	"-v"
 #define COMMENT_SYMBOL			';'
 
 class Application
 {
+	/* basic structure for all commands */
 	typedef struct				s_cmd
 	{
 		std::string			name;
@@ -23,11 +23,18 @@ class Application
 	}							t_cmd;
 
 	boost::regex							regExp;
+
+	/* vector of commands {push, pop, dump, ...} */
 	std::vector<t_cmd>						commands;
+
 	std::map<std::string, eOperandType>		types;
 
+	/* vector of strings read from given stream */
 	std::vector<std::string>				stringList;
+
+	/* array of pairs {(line on which token has been read) => (result of regex_match)} */
 	std::map<size_t, boost::smatch>			tokens;
+
 	IterStack<IOperand const *>				stack;
 	OperandFactory							operandFactory;
 
@@ -36,6 +43,7 @@ class Application
 	void								readStream(std::istream & stream, bool flagReadFromSTDIN);
 	void								execute();
 
+	/* commands */
 	void	pushHandler();
 	void	popHandler();
 	void	dumpHandler();
@@ -46,14 +54,15 @@ class Application
 	void	modHandler();
 	void	assertHandler();
 	void	printHandler();
+
 public:
 	Application();
 	Application(Application const & other);
 	Application & operator=(Application const & other);
 	~Application();
 
+	/* main function of application */
 	void	process(std::istream & stream, bool flagReadFromSTDIN = 0);
-	void	setFlagVerbose(bool	val);
 };
 
 #endif
