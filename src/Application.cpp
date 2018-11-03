@@ -39,7 +39,13 @@ Application & Application::operator=(Application const & other)
 }
 
 Application::~Application()
-{}
+{
+	while (!stack.empty())
+	{
+		delete stack.top();
+		stack.pop();
+	}
+}
 
 void	Application::readStream(std::istream & stream, bool flagReadFromSTDIN)
 {
@@ -130,6 +136,12 @@ void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 {
 	tokens.erase(tokens.begin(), tokens.end());
 	stringList.erase(stringList.begin(), stringList.end());
+
+	while (!stack.empty())
+	{
+		delete stack.top();
+		stack.pop();
+	}
 
 	readStream(stream, flagReadFromSTDIN);
 	if (lexer())
