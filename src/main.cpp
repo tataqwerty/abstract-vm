@@ -4,16 +4,8 @@ int main(int ac, char *av[])
 {
 	Application					app;
 	std::ifstream				file;
-	std::vector<std::string>	args(&av[1], &av[ac]);
 
-	//	check if arguments have verbose flag, if so remember it, and delete this argument
-	if (std::find(args.begin(), args.end(), std::string(VERBOSE_FLAG_SIGNATURE)) != args.end())
-	{
-		app.setFlagVerbose(1);
-		args.erase(std::remove(args.begin(), args.end(), std::string(VERBOSE_FLAG_SIGNATURE)), args.end());
-	}
-
-	if (!args.size())
+	if (ac == 1)
 	{
 		try {
 			app.process(std::cin, READ_FROM_STDIN);
@@ -24,10 +16,10 @@ int main(int ac, char *av[])
 	else
 	{
 
-		for (std::string filename : args)
+		for (int i = 1; i < ac; i++)
 		{
 			errno = 0;
-			file.open(filename);
+			file.open(av[i]);
 
 			try {
 				app.process(file);

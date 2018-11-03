@@ -1,11 +1,8 @@
 #include "Application.hpp"
 #include "Operand.hpp"
 
-void	Application::setFlagVerbose(bool value) { flagVerbose = value; }
-
 Application::Application()
-:	flagVerbose(0),
-	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))[\\s;]*$"),
+:	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))[\\s;]*$"),
 	commands({
 		{.name = "push", .function = &Application::pushHandler},
 		{.name = "pop", .function = &Application::popHandler},
@@ -35,10 +32,8 @@ Application::Application(Application const & other)
 
 Application & Application::operator=(Application const & other)
 {
-	this->flagVerbose = other.flagVerbose;
 	this->stringList = other.stringList;
 	this->tokens = other.tokens;
-	this->errors = other.errors;
 	this->stack = other.stack;
 	return *this;
 }
@@ -51,7 +46,7 @@ void	Application::readStream(std::istream & stream, bool flagReadFromSTDIN)
 	std::string	buffer;
 
 	if (errno)
-		throw std::logic_error(std::strerror(errno));
+		throw Exceptions::General(std::strerror(errno));
 
 	while (std::getline(stream, buffer))
 	{
@@ -73,28 +68,27 @@ std::pair<size_t, boost::smatch>	Application::tokenize(std::string & str, size_t
 		throw Exceptions::UndefinedToken();
 }
 
-void	Application::lexer()
+bool	Application::lexer()
 {
+	bool	error = 0;
+
 	for (size_t i = 0; i < stringList.size(); i++)
 	{
 		//	if first character of a string is not a ';'
-		if (stringList[i][0] != COMMENT_SYMBOL)	//	kostil
+		if (!stringList[i].empty() && stringList[i][0] != COMMENT_SYMBOL)	//	kostil
 		{
 
 			try {
 				tokens.insert(tokenize(stringList[i], i + 1));
 			} catch(std::exception & e) {
-				errors.push_back("Line " + std::to_string(i + 1) + " : Error : " +  e.what() + " -> " + stringList[i]);
-
-				if (errors.size() >= 5 && !flagVerbose)
-				{
-					errors.push_back("Error : too much errors occured (use " + std::string(VERBOSE_FLAG_SIGNATURE) + " to see more)");
-					return ;
-				}
+				std::cout << "Line " + std::to_string(i + 1) + " : Error : " +  e.what() + " -> " + stringList[i] << std::endl;
+				error = 1;
 			}
 
 		}
 	}
+
+	return error == 0;
 }
 
 void	Application::execute()
@@ -135,17 +129,10 @@ void	Application::execute()
 void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
 {
 	tokens.erase(tokens.begin(), tokens.end());
-	errors.erase(errors.begin(), errors.end());
 	stringList.erase(stringList.begin(), stringList.end());
 
 	readStream(stream, flagReadFromSTDIN);
-	lexer();
-	if (errors.size())
-	{
-		for (std::string err : errors)
-			std::cout << err << std::endl;
-	}
-	else
+	if (lexer())
 		execute();
 }
 

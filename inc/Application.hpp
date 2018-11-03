@@ -23,19 +23,17 @@ class Application
 		void (Application::*function)();
 	}							t_cmd;
 
-	bool									flagVerbose;
 	boost::regex							regExp;
 	std::vector<t_cmd>						commands;
 	std::map<std::string, eOperandType>		types;
 
 	std::vector<std::string>				stringList;
 	std::map<size_t, boost::smatch>			tokens;
-	std::list<std::string>					errors;
 	IterStack<IOperand const *>				stack;
 	OperandFactory							operandFactory;
 
 	std::pair<size_t, boost::smatch>	tokenize(std::string & str, size_t line);
-	void								lexer();
+	bool								lexer();
 	void								readStream(std::istream & stream, bool flagReadFromSTDIN);
 	void								execute();
 

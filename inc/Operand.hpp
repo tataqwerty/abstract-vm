@@ -32,7 +32,7 @@ public:
 
 	Operand(eOperandType operandType, std::string const & operandValue)
 	:	type(operandType),
-		value(boost::lexical_cast<std::string>(convert(operandValue))),
+		value(std::to_string(boost::numeric_cast<T>(convert(operandValue)))),
 		operandFactory(OperandFactory())
 	{}
 
