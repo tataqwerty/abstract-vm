@@ -52,7 +52,13 @@ public:
 
 	long double	convert(std::string const & s) const
 	{
-		return (boost::numeric_cast<T>(std::stold(s)));	 //	throw exception happens here
+		try {
+			return (boost::numeric_cast<T>(std::stold(s)));
+		} catch(boost::numeric::positive_overflow & e) {
+			throw Exceptions::PositiveOverflow();
+		} catch(boost::numeric::negative_overflow & e) {
+			throw Exceptions::NegativeOverflow();
+		}
 	}
 
 	IOperand const *	basicOperation(IOperand const & left, IOperand const & right, long double (*f)(long double, long double)) const

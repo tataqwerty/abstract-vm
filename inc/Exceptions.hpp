@@ -74,6 +74,22 @@ public:
 		~ModuloByZero();
 		const char	*	what() const throw();
 	};
+
+	class	PositiveOverflow : public std::exception
+	{
+	public:
+		PositiveOverflow();
+		~PositiveOverflow();
+		const char	*	what() const throw();
+	};
+
+	class	NegativeOverflow : public std::exception
+	{
+	public:
+		NegativeOverflow();
+		~NegativeOverflow();
+		const char	*	what() const throw();
+	};
 };
 
 #endif

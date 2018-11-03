@@ -115,3 +115,29 @@ const char * Exceptions::ModuloByZero::what() const throw()
 {
 	return ("Modulo by zero");
 }
+
+// ----- PositiveOverflow -----
+
+Exceptions::PositiveOverflow::PositiveOverflow()
+{}
+
+Exceptions::PositiveOverflow::~PositiveOverflow()
+{}
+
+const char * Exceptions::PositiveOverflow::what() const throw()
+{
+	return ("Positive Overflow");
+}
+
+// ----- NegativeOverflow -----
+
+Exceptions::NegativeOverflow::NegativeOverflow()
+{}
+
+Exceptions::NegativeOverflow::~NegativeOverflow()
+{}
+
+const char * Exceptions::NegativeOverflow::what() const throw()
+{
+	return ("Negative Overflow");
+}
