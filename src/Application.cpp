@@ -40,7 +40,6 @@ Application & Application::operator=(Application const & other)
 	this->tokens = other.tokens;
 	this->errors = other.errors;
 	this->stack = other.stack;
-	this->operandFactory = other.operandFactory;
 	return *this;
 }
 

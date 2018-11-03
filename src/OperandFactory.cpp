@@ -10,12 +10,6 @@ OperandFactory::OperandFactory()
 	createOperandFunctions[Double] = &OperandFactory::createDouble;
 }
 
-// OperandFactory::OperandFactory(OperandFactory const & other)
-// {}
-
-// OperandFactory & OperandFactory::OperandFactory(OperandFactory const & other)
-// {}
-
 OperandFactory::~OperandFactory()
 {}
 

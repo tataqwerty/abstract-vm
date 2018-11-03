@@ -15,8 +15,6 @@ class OperandFactory
 
 public:
 	OperandFactory();
-	// OperandFactory(OperandFactory const& other);
-	// OperandFactory & operator=(OperandFactory const& other);
 	~OperandFactory();
 
 	IOperand const * createOperand(eOperandType type, std::string const & value) const;
