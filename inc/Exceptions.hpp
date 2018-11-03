@@ -90,6 +90,14 @@ public:
 		~NegativeOverflow();
 		const char	*	what() const throw();
 	};
+
+	class	Directory : public std::exception
+	{
+	public:
+		Directory();
+		~Directory();
+		const char	*	what() const throw();
+	};
 };
 
 #endif

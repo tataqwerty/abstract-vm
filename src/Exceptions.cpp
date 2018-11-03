@@ -141,3 +141,16 @@ const char * Exceptions::NegativeOverflow::what() const throw()
 {
 	return ("Negative Overflow");
 }
+
+// ----- Directory -----
+
+Exceptions::Directory::Directory()
+{}
+
+Exceptions::Directory::~Directory()
+{}
+
+const char * Exceptions::Directory::what() const throw()
+{
+	return ("Error : is a directory");
+}

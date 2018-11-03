@@ -47,12 +47,11 @@ Application::~Application()
 	}
 }
 
+#include <stdio.h>
+
 void	Application::readStream(std::istream & stream, bool flagReadFromSTDIN)
 {
 	std::string	buffer;
-
-	if (errno)
-		throw Exceptions::General(std::strerror(errno));
 
 	while (std::getline(stream, buffer))
 	{

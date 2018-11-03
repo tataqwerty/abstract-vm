@@ -4,7 +4,6 @@
 #include "OperandFactory.hpp"
 #include "IterStack.hpp"
 #include "Exceptions.hpp"
-#include <errno.h>
 #include <list>
 #include <cstring>
 #include <fstream>
