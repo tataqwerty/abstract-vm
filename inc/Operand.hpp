@@ -55,108 +55,176 @@ public:
 		return (boost::numeric_cast<T>(std::stold(s)));	 //	throw exception happens here
 	}
 
-	IOperand const * operator+( IOperand const & rhs ) const
+	IOperand const *	basicOperation(IOperand const & left, IOperand const & right, long double (*f)(long double, long double)) const
 	{
 		eOperandType	newOperandType;
 		std::string		newOperandValue;
 
-		if (this->getPrecision() >= rhs.getPrecision())
+		if (left.getPrecision() >= right.getPrecision())
 		{
-			newOperandType = this->getType();
-			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) + this->convert(rhs.toString()));
+			newOperandType = left.getType();
+			newOperandValue = boost::lexical_cast<std::string>(f(left.convert(left.toString()), left.convert(right.toString())));
 		}
 		else
 		{
-			newOperandType = rhs.getType();
-			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) + rhs.convert(rhs.toString()));
+			newOperandType = right.getType();
+			newOperandValue = boost::lexical_cast<std::string>(f(right.convert(left.toString()), right.convert(right.toString())));
 		}
 
 		return (operandFactory.createOperand(newOperandType, newOperandValue));
+	}
+
+	IOperand const * operator+( IOperand const & rhs ) const
+	{
+		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
+			return leftVal + rightVal;
+		};
+
+		return basicOperation(*this, rhs, f);
 	}
 
 	IOperand const * operator-( IOperand const & rhs ) const
 	{
-		eOperandType	newOperandType;
-		std::string		newOperandValue;
+		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
+			return leftVal - rightVal;
+		};
 
-		if (this->getPrecision() >= rhs.getPrecision())
-		{
-			newOperandType = this->getType();
-			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) - this->convert(rhs.toString()));
-		}
-		else
-		{
-			newOperandType = rhs.getType();
-			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) - rhs.convert(rhs.toString()));
-		}
-
-		return (operandFactory.createOperand(newOperandType, newOperandValue));
+		return basicOperation(*this, rhs, f);
 	}
 
 	IOperand const * operator*( IOperand const & rhs ) const
 	{
-		eOperandType	newOperandType;
-		std::string		newOperandValue;
+		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
+			return leftVal * rightVal;
+		};
 
-		if (this->getPrecision() >= rhs.getPrecision())
-		{
-			newOperandType = this->getType();
-			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) * this->convert(rhs.toString()));
-		}
-		else
-		{
-			newOperandType = rhs.getType();
-			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) * rhs.convert(rhs.toString()));
-		}
-
-		return (operandFactory.createOperand(newOperandType, newOperandValue));
+		return basicOperation(*this, rhs, f);
 	}
 
 	IOperand const * operator/( IOperand const & rhs ) const
 	{
-		eOperandType	newOperandType;
-		std::string		newOperandValue;
-
-		if (this->getPrecision() >= rhs.getPrecision())
-		{
-			newOperandType = this->getType();
-			if (this->convert(rhs.toString()) == 0)
+		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
+			if (!rightVal)
 				throw Exceptions::DivideByZeroException();
-			newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) / this->convert(rhs.toString()));
-		}
-		else
-		{
-			newOperandType = rhs.getType();
-			if (rhs.convert(rhs.toString()) == 0)
-				throw Exceptions::DivideByZeroException();
-			newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) / rhs.convert(rhs.toString()));
-		}
+			return leftVal / rightVal;
+		};
 
-		return (operandFactory.createOperand(newOperandType, newOperandValue));
+		return basicOperation(*this, rhs, f);
 	}
 
 	IOperand const * operator%( IOperand const & rhs ) const
 	{
-		eOperandType	newOperandType;
-		std::string		newOperandValue;
-
-		if (this->getPrecision() >= rhs.getPrecision())
-		{
-			newOperandType = this->getType();
-			if (this->convert(rhs.toString()) == 0)
+		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
+			if (!rightVal)
 				throw Exceptions::ModuloByZeroException();
-			newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(this->convert(this->toString()))) % static_cast<long>(roundl(this->convert(rhs.toString()))));
-		}
-		else
-		{
-			newOperandType = rhs.getType();
-			if (rhs.convert(rhs.toString()) == 0)
-				throw Exceptions::ModuloByZeroException();
-			newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(rhs.convert(this->toString()))) % static_cast<long>(roundl(rhs.convert(rhs.toString()))));
-		}
+			return static_cast<long double>(static_cast<long>(roundl(leftVal)) % static_cast<long>(roundl(rightVal)));
+		};
 
-		return (operandFactory.createOperand(newOperandType, newOperandValue));
+		return basicOperation(*this, rhs, f);
 	}
+
+	// IOperand const * operator+( IOperand const & rhs ) const
+	// {
+	// 	eOperandType	newOperandType;
+	// 	std::string		newOperandValue;
+
+	// 	if (this->getPrecision() >= rhs.getPrecision())
+	// 	{
+	// 		newOperandType = this->getType();
+	// 		newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) + this->convert(rhs.toString()));
+	// 	}
+	// 	else
+	// 	{
+	// 		newOperandType = rhs.getType();
+	// 		newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) + rhs.convert(rhs.toString()));
+	// 	}
+
+	// 	return (operandFactory.createOperand(newOperandType, newOperandValue));
+	// }
+
+	// IOperand const * operator-( IOperand const & rhs ) const
+	// {
+	// 	eOperandType	newOperandType;
+	// 	std::string		newOperandValue;
+
+	// 	if (this->getPrecision() >= rhs.getPrecision())
+	// 	{
+	// 		newOperandType = this->getType();
+	// 		newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) - this->convert(rhs.toString()));
+	// 	}
+	// 	else
+	// 	{
+	// 		newOperandType = rhs.getType();
+	// 		newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) - rhs.convert(rhs.toString()));
+	// 	}
+
+	// 	return (operandFactory.createOperand(newOperandType, newOperandValue));
+	// }
+
+	// IOperand const * operator*( IOperand const & rhs ) const
+	// {
+	// 	eOperandType	newOperandType;
+	// 	std::string		newOperandValue;
+
+	// 	if (this->getPrecision() >= rhs.getPrecision())
+	// 	{
+	// 		newOperandType = this->getType();
+	// 		newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) * this->convert(rhs.toString()));
+	// 	}
+	// 	else
+	// 	{
+	// 		newOperandType = rhs.getType();
+	// 		newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) * rhs.convert(rhs.toString()));
+	// 	}
+
+	// 	return (operandFactory.createOperand(newOperandType, newOperandValue));
+	// }
+
+	// IOperand const * operator/( IOperand const & rhs ) const
+	// {
+	// 	eOperandType	newOperandType;
+	// 	std::string		newOperandValue;
+
+	// 	if (this->getPrecision() >= rhs.getPrecision())
+	// 	{
+	// 		newOperandType = this->getType();
+	// 		if (this->convert(rhs.toString()) == 0)
+	// 			throw Exceptions::DivideByZeroException();
+	// 		newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) / this->convert(rhs.toString()));
+	// 	}
+	// 	else
+	// 	{
+	// 		newOperandType = rhs.getType();
+	// 		if (rhs.convert(rhs.toString()) == 0)
+	// 			throw Exceptions::DivideByZeroException();
+	// 		newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) / rhs.convert(rhs.toString()));
+	// 	}
+
+	// 	return (operandFactory.createOperand(newOperandType, newOperandValue));
+	// }
+
+	// IOperand const * operator%( IOperand const & rhs ) const
+	// {
+	// 	eOperandType	newOperandType;
+	// 	std::string		newOperandValue;
+
+	// 	if (this->getPrecision() >= rhs.getPrecision())
+	// 	{
+	// 		newOperandType = this->getType();
+	// 		if (this->convert(rhs.toString()) == 0)
+	// 			throw Exceptions::ModuloByZeroException();
+	// 		newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(this->convert(this->toString()))) % static_cast<long>(roundl(this->convert(rhs.toString()))));
+	// 	}
+	// 	else
+	// 	{
+	// 		newOperandType = rhs.getType();
+	// 		if (rhs.convert(rhs.toString()) == 0)
+	// 			throw Exceptions::ModuloByZeroException();
+	// 		newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(rhs.convert(this->toString()))) % static_cast<long>(roundl(rhs.convert(rhs.toString()))));
+	// 	}
+
+	// 	return (operandFactory.createOperand(newOperandType, newOperandValue));
+	// }
 
 	bool	operator==(IOperand const & rhs) const
 	{

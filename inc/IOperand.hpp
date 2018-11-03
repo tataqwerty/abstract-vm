@@ -10,7 +10,9 @@ public:
 	virtual int					getPrecision( void ) const = 0; // Precision of the type of the instance
 	virtual eOperandType		getType( void ) const = 0; // Type of the instance
 
-	virtual	long double			convert(std::string const & s) const = 0;
+	virtual	long double			convert( std::string const & s ) const = 0;
+
+	virtual IOperand const *	basicOperation( IOperand const & left , IOperand const & right, long double (*f)(long double, long double) ) const = 0;
 
 	virtual IOperand const *	operator+( IOperand const & rhs ) const = 0; // Sum
 	virtual IOperand const *	operator-( IOperand const & rhs ) const = 0; // Difference

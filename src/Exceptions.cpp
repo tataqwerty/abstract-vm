@@ -35,7 +35,7 @@ Exceptions::NotEqualValuesException::~NotEqualValuesException()
 
 const char * Exceptions::NotEqualValuesException::what() const throw()
 {
-	return ("Values are not equal!");
+	return ("Values are not equal");
 }
 
 // ----- InvalidOperandsQuantityException -----
@@ -48,7 +48,7 @@ Exceptions::InvalidOperandsQuantityException::~InvalidOperandsQuantityException(
 
 const char * Exceptions::InvalidOperandsQuantityException::what() const throw()
 {
-	return ("Invalid quantity of operands!");
+	return ("Invalid quantity of operands");
 }
 
 // ----- UndefinedTokenException -----
@@ -61,7 +61,7 @@ Exceptions::UndefinedTokenException::~UndefinedTokenException()
 
 const char * Exceptions::UndefinedTokenException::what() const throw()
 {
-	return ("Undefined token!");
+	return ("Undefined token");
 }
 
 // ----- NoExitCMDException -----
@@ -74,7 +74,7 @@ Exceptions::NoExitCMDException::~NoExitCMDException()
 
 const char * Exceptions::NoExitCMDException::what() const throw()
 {
-	return ("Error : no exit command!");
+	return ("Error : no exit command");
 }
 
 // ----- EmptyStackException -----
@@ -87,7 +87,7 @@ Exceptions::EmptyStackException::~EmptyStackException()
 
 const char * Exceptions::EmptyStackException::what() const throw()
 {
-	return ("Stack is empty!");
+	return ("Stack is empty");
 }
 
 // ----- DivideByZeroException -----
@@ -100,7 +100,7 @@ Exceptions::DivideByZeroException::~DivideByZeroException()
 
 const char * Exceptions::DivideByZeroException::what() const throw()
 {
-	return ("Divide by zero!");
+	return ("Divide by zero");
 }
 
 // ----- ModuloByZeroException -----
@@ -113,5 +113,5 @@ Exceptions::ModuloByZeroException::~ModuloByZeroException()
 
 const char * Exceptions::ModuloByZeroException::what() const throw()
 {
-	return ("Modulo by zero!");
+	return ("Modulo by zero");
 }
