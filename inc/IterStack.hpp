@@ -55,21 +55,21 @@ public:
 	void	pop()
 	{
 		if (this->empty())
-			throw Exceptions::EmptyStackException();
+			throw Exceptions::EmptyStack();
 		this->c.pop_back();
 	}
 
 	reference top()
 	{
 		if (this->empty())
-			throw Exceptions::EmptyStackException();
+			throw Exceptions::EmptyStack();
 		return (this->c.back());
 	}
 
 	const_reference top() const
 	{
 		if (this->empty())
-			throw Exceptions::EmptyStackException();
+			throw Exceptions::EmptyStack();
 		return (this->c.back());
 	}
 };

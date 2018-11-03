@@ -13,6 +13,7 @@
 #define READ_FROM_STDIN			1
 #define END_OF_STDIN			";;"
 #define VERBOSE_FLAG_SIGNATURE	"-v"
+#define COMMENT_SYMBOL			';'
 
 class Application
 {

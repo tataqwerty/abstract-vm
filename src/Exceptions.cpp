@@ -1,117 +1,117 @@
 #include "Exceptions.hpp"
 
-// ----- GeneralException -----
+// ----- General -----
 
-Exceptions::GeneralException::GeneralException(std::string const & s)
+Exceptions::General::General(std::string const & s)
 :	msg(s)
 {}
 
-Exceptions::GeneralException::GeneralException(Exceptions::GeneralException const & other)
+Exceptions::General::General(Exceptions::General const & other)
 {
 	*this = other;
 }
 
-Exceptions::GeneralException & Exceptions::GeneralException::operator=(Exceptions::GeneralException const & other)
+Exceptions::General & Exceptions::General::operator=(Exceptions::General const & other)
 {
 	this->msg = other.msg;
 	return *this;
 }
 
-Exceptions::GeneralException::~GeneralException()
+Exceptions::General::~General()
 {}
 
-const char * Exceptions::GeneralException::what() const throw()
+const char * Exceptions::General::what() const throw()
 {
 	return (this->msg.c_str());
 }
 
-// ----- NotEqualValuesException -----
+// ----- NotEqualValues -----
 
-Exceptions::NotEqualValuesException::NotEqualValuesException()
+Exceptions::NotEqualValues::NotEqualValues()
 {}
 
-Exceptions::NotEqualValuesException::~NotEqualValuesException()
+Exceptions::NotEqualValues::~NotEqualValues()
 {}
 
-const char * Exceptions::NotEqualValuesException::what() const throw()
+const char * Exceptions::NotEqualValues::what() const throw()
 {
 	return ("Values are not equal");
 }
 
-// ----- InvalidOperandsQuantityException -----
+// ----- InvalidOperandsQuantity -----
 
-Exceptions::InvalidOperandsQuantityException::InvalidOperandsQuantityException()
+Exceptions::InvalidOperandsQuantity::InvalidOperandsQuantity()
 {}
 
-Exceptions::InvalidOperandsQuantityException::~InvalidOperandsQuantityException()
+Exceptions::InvalidOperandsQuantity::~InvalidOperandsQuantity()
 {}
 
-const char * Exceptions::InvalidOperandsQuantityException::what() const throw()
+const char * Exceptions::InvalidOperandsQuantity::what() const throw()
 {
 	return ("Invalid quantity of operands");
 }
 
-// ----- UndefinedTokenException -----
+// ----- UndefinedToken -----
 
-Exceptions::UndefinedTokenException::UndefinedTokenException()
+Exceptions::UndefinedToken::UndefinedToken()
 {}
 
-Exceptions::UndefinedTokenException::~UndefinedTokenException()
+Exceptions::UndefinedToken::~UndefinedToken()
 {}
 
-const char * Exceptions::UndefinedTokenException::what() const throw()
+const char * Exceptions::UndefinedToken::what() const throw()
 {
 	return ("Undefined token");
 }
 
-// ----- NoExitCMDException -----
+// ----- NoExitCMD -----
 
-Exceptions::NoExitCMDException::NoExitCMDException()
+Exceptions::NoExitCMD::NoExitCMD()
 {}
 
-Exceptions::NoExitCMDException::~NoExitCMDException()
+Exceptions::NoExitCMD::~NoExitCMD()
 {}
 
-const char * Exceptions::NoExitCMDException::what() const throw()
+const char * Exceptions::NoExitCMD::what() const throw()
 {
 	return ("Error : no exit command");
 }
 
-// ----- EmptyStackException -----
+// ----- EmptyStack -----
 
-Exceptions::EmptyStackException::EmptyStackException()
+Exceptions::EmptyStack::EmptyStack()
 {}
 
-Exceptions::EmptyStackException::~EmptyStackException()
+Exceptions::EmptyStack::~EmptyStack()
 {}
 
-const char * Exceptions::EmptyStackException::what() const throw()
+const char * Exceptions::EmptyStack::what() const throw()
 {
 	return ("Stack is empty");
 }
 
-// ----- DivideByZeroException -----
+// ----- DivideByZero -----
 
-Exceptions::DivideByZeroException::DivideByZeroException()
+Exceptions::DivideByZero::DivideByZero()
 {}
 
-Exceptions::DivideByZeroException::~DivideByZeroException()
+Exceptions::DivideByZero::~DivideByZero()
 {}
 
-const char * Exceptions::DivideByZeroException::what() const throw()
+const char * Exceptions::DivideByZero::what() const throw()
 {
 	return ("Divide by zero");
 }
 
-// ----- ModuloByZeroException -----
+// ----- ModuloByZero -----
 
-Exceptions::ModuloByZeroException::ModuloByZeroException()
+Exceptions::ModuloByZero::ModuloByZero()
 {}
 
-Exceptions::ModuloByZeroException::~ModuloByZeroException()
+Exceptions::ModuloByZero::~ModuloByZero()
 {}
 
-const char * Exceptions::ModuloByZeroException::what() const throw()
+const char * Exceptions::ModuloByZero::what() const throw()
 {
 	return ("Modulo by zero");
 }

@@ -105,7 +105,7 @@ public:
 	{
 		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
 			if (!rightVal)
-				throw Exceptions::DivideByZeroException();
+				throw Exceptions::DivideByZero();
 			return leftVal / rightVal;
 		};
 
@@ -116,7 +116,7 @@ public:
 	{
 		long double (*f)(long double, long double) = [](long double leftVal, long double rightVal){
 			if (!rightVal)
-				throw Exceptions::ModuloByZeroException();
+				throw Exceptions::ModuloByZero();
 			return static_cast<long double>(static_cast<long>(roundl(leftVal)) % static_cast<long>(roundl(rightVal)));
 		};
 
@@ -189,14 +189,14 @@ public:
 	// 	{
 	// 		newOperandType = this->getType();
 	// 		if (this->convert(rhs.toString()) == 0)
-	// 			throw Exceptions::DivideByZeroException();
+	// 			throw Exceptions::DivideByZero();
 	// 		newOperandValue = boost::lexical_cast<std::string>(this->convert(this->toString()) / this->convert(rhs.toString()));
 	// 	}
 	// 	else
 	// 	{
 	// 		newOperandType = rhs.getType();
 	// 		if (rhs.convert(rhs.toString()) == 0)
-	// 			throw Exceptions::DivideByZeroException();
+	// 			throw Exceptions::DivideByZero();
 	// 		newOperandValue = boost::lexical_cast<std::string>(rhs.convert(this->toString()) / rhs.convert(rhs.toString()));
 	// 	}
 
@@ -212,14 +212,14 @@ public:
 	// 	{
 	// 		newOperandType = this->getType();
 	// 		if (this->convert(rhs.toString()) == 0)
-	// 			throw Exceptions::ModuloByZeroException();
+	// 			throw Exceptions::ModuloByZero();
 	// 		newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(this->convert(this->toString()))) % static_cast<long>(roundl(this->convert(rhs.toString()))));
 	// 	}
 	// 	else
 	// 	{
 	// 		newOperandType = rhs.getType();
 	// 		if (rhs.convert(rhs.toString()) == 0)
-	// 			throw Exceptions::ModuloByZeroException();
+	// 			throw Exceptions::ModuloByZero();
 	// 		newOperandValue = boost::lexical_cast<std::string>(static_cast<long>(roundl(rhs.convert(this->toString()))) % static_cast<long>(roundl(rhs.convert(rhs.toString()))));
 	// 	}
 

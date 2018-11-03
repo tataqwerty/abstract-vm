@@ -5,7 +5,7 @@ void	Application::setFlagVerbose(bool value) { flagVerbose = value; }
 
 Application::Application()
 :	flagVerbose(0),
-	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))\\s*$"),
+	regExp("^\\s*(?|(?:(?<cmd>push|assert)\\s+(?<type>int8|int16|int32)\\((?<value>[-]?\\d+)\\))|(?:(?<cmd>push|assert)\\s+(?<type>float|double)\\((?<value>[-]?\\d+\\.\\d+)\\))|(?:(?<cmd>pop|dump|add|sub|mul|div|mod|print|exit)))[\\s;]*$"),
 	commands({
 		{.name = "push", .function = &Application::pushHandler},
 		{.name = "pop", .function = &Application::popHandler},
@@ -59,13 +59,7 @@ void	Application::readStream(std::istream & stream, bool flagReadFromSTDIN)
 		//	end of input from stdin
 		if (flagReadFromSTDIN && buffer == END_OF_STDIN)
 			break ;
-
-		// comment
-		if (buffer.find(";") != buffer.npos && !stream.eof())
-			buffer = buffer.substr(0, buffer.find(";"));
-
 		stringList.push_back(buffer);
-
 		buffer.clear();
 	}
 }
@@ -77,20 +71,21 @@ std::pair<size_t, boost::smatch>	Application::tokenize(std::string & str, size_t
 	if (boost::regex_match(str, m, regExp))
 		return std::make_pair(line, m);
 	else
-		throw Exceptions::UndefinedTokenException();
+		throw Exceptions::UndefinedToken();
 }
 
 void	Application::lexer()
 {
 	for (size_t i = 0; i < stringList.size(); i++)
 	{
-		if (!stringList[i].empty())
+		//	if first character of a string is not a ';'
+		if (stringList[i][0] != COMMENT_SYMBOL)	//	kostil
 		{
 
 			try {
 				tokens.insert(tokenize(stringList[i], i + 1));
 			} catch(std::exception & e) {
-				errors.push_back("Line " + std::to_string(i + 1) + " : Error : " +  e.what());
+				errors.push_back("Line " + std::to_string(i + 1) + " : Error : " +  e.what() + " -> " + stringList[i]);
 
 				if (errors.size() >= 5 && !flagVerbose)
 				{
@@ -124,7 +119,7 @@ void	Application::execute()
 				try {
 					(this->*(command.function))();
 				} catch(std::exception & e) {
-					throw Exceptions::GeneralException("Line " + std::to_string(line) + " : Error : " + e.what());
+					throw Exceptions::General("Line " + std::to_string(line) + " : Error : " + e.what());
 				}
 				break ;
 			}
@@ -135,7 +130,7 @@ void	Application::execute()
 
 	//	there are must be token with exit command.
 	if (tokens.empty())
-		throw Exceptions::NoExitCMDException();
+		throw Exceptions::NoExitCMD();
 }
 
 void	Application::process(std::istream & stream, bool flagReadFromSTDIN)
@@ -210,7 +205,7 @@ void	Application::addHandler()
 		delete op2;
 	}
 	else
-		throw Exceptions::InvalidOperandsQuantityException();
+		throw Exceptions::InvalidOperandsQuantity();
 }
 
 void	Application::subHandler()
@@ -237,7 +232,7 @@ void	Application::subHandler()
 		delete op2;
 	}
 	else
-		throw Exceptions::InvalidOperandsQuantityException();
+		throw Exceptions::InvalidOperandsQuantity();
 }
 
 void	Application::mulHandler()
@@ -264,7 +259,7 @@ void	Application::mulHandler()
 		delete op2;
 	}
 	else
-		throw Exceptions::InvalidOperandsQuantityException();
+		throw Exceptions::InvalidOperandsQuantity();
 }
 
 void	Application::divHandler()
@@ -291,7 +286,7 @@ void	Application::divHandler()
 		delete op2;
 	}
 	else
-		throw Exceptions::InvalidOperandsQuantityException();
+		throw Exceptions::InvalidOperandsQuantity();
 }
 
 void	Application::modHandler()
@@ -318,7 +313,7 @@ void	Application::modHandler()
 		delete op2;
 	}
 	else
-		throw Exceptions::InvalidOperandsQuantityException();
+		throw Exceptions::InvalidOperandsQuantity();
 }
 
 void	Application::assertHandler()
@@ -329,7 +324,7 @@ void	Application::assertHandler()
 	tmp = operandFactory.createOperand(types[token["type"]], token["value"]);
 	try {
 		if (!(*tmp == *stack.top()))
-			throw Exceptions::NotEqualValuesException();
+			throw Exceptions::NotEqualValues();
 	} catch(std::exception & e) {
 		delete tmp;
 		throw;
@@ -342,5 +337,5 @@ void	Application::printHandler()
 	if (stack.top()->getType() == types["int8"])
 		std::cout << boost::numeric_cast<char>(std::stoi(stack.top()->toString())) << std::endl;
 	else
-		throw Exceptions::NotEqualValuesException();
+		throw Exceptions::NotEqualValues();
 }

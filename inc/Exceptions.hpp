@@ -7,71 +7,71 @@
 class Exceptions
 {
 public:
-	class	GeneralException : public std::exception
+	class	General : public std::exception
 	{
 		std::string msg;
 
 	public:
-		explicit GeneralException(std::string const & s);
-		GeneralException(GeneralException const & other);
-		GeneralException & operator=(GeneralException const & other);
-		~GeneralException();
+		explicit General(std::string const & s);
+		General(General const & other);
+		General & operator=(General const & other);
+		~General();
 		const char	*	what() const throw();
 	};
 
-	class	NotEqualValuesException : public std::exception
+	class	NotEqualValues : public std::exception
 	{
 	public:
-		NotEqualValuesException();
-		~NotEqualValuesException();
+		NotEqualValues();
+		~NotEqualValues();
 		const char	*	what() const throw();
 	};
 
-	class	InvalidOperandsQuantityException : public std::exception
+	class	InvalidOperandsQuantity : public std::exception
 	{
 	public:
-		InvalidOperandsQuantityException();
-		~InvalidOperandsQuantityException();
+		InvalidOperandsQuantity();
+		~InvalidOperandsQuantity();
 		const char	*	what() const throw();
 	};
 
-	class	UndefinedTokenException : public std::exception
+	class	UndefinedToken : public std::exception
 	{
 	public:
-		UndefinedTokenException();
-		~UndefinedTokenException();
+		UndefinedToken();
+		~UndefinedToken();
 		const char	*	what() const throw();
 	};
 
-	class	NoExitCMDException : public std::exception
+	class	NoExitCMD : public std::exception
 	{
 	public:
-		NoExitCMDException();
-		~NoExitCMDException();
+		NoExitCMD();
+		~NoExitCMD();
 		const char	*	what() const throw();
 	};
 
-	class	EmptyStackException : public std::exception
+	class	EmptyStack : public std::exception
 	{
 	public:
-		EmptyStackException();
-		~EmptyStackException();
+		EmptyStack();
+		~EmptyStack();
 		const char	*	what() const throw();
 	};
 
-	class	DivideByZeroException : public std::exception
+	class	DivideByZero : public std::exception
 	{
 	public:
-		DivideByZeroException();
-		~DivideByZeroException();
+		DivideByZero();
+		~DivideByZero();
 		const char	*	what() const throw();
 	};
 
-	class	ModuloByZeroException : public std::exception
+	class	ModuloByZero : public std::exception
 	{
 	public:
-		ModuloByZeroException();
-		~ModuloByZeroException();
+		ModuloByZero();
+		~ModuloByZero();
 		const char	*	what() const throw();
 	};
 };
