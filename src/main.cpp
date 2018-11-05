@@ -27,7 +27,7 @@ int main(int ac, char *av[])
 		{
 			errno = 0;
 			file.open(av[i]);
-			stat(av[1], &fileStat);
+			stat(av[i], &fileStat);
 
 			try {
 				if (errno)
