@@ -44,6 +44,5 @@ int main(int ac, char *av[])
 		}
 
 	}
-	system("leaks -q avm");
 	return 0;
 }
