@@ -170,6 +170,15 @@ void	Application::popHandler()
 	delete tmp;
 }
 
+std::string	const&	Application::typeToString(eOperandType type) const
+{
+	std::map<std::string, eOperandType>::const_iterator	pairStrType = std::find_if(std::begin(types), std::end(types), [&](std::pair<std::string, eOperandType> const& obj){
+		return obj.second == type;
+	});
+
+	return pairStrType->first;
+}
+
 void	Application::dumpHandler()
 {
 	IterStack<const IOperand *>::iterator it = stack.end();
@@ -177,7 +186,7 @@ void	Application::dumpHandler()
 	for (size_t i = 0; i < stack.size(); i++)
 	{
 		it--;
-		std::cout << (*it)->toString() << std::endl;
+		std::cout << std::setw(6) << std::left << typeToString((*it)->getType()) << " : " << (*it)->toString() << std::endl;
 	}
 }
 

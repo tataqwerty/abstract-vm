@@ -7,6 +7,7 @@
 #include <list>
 #include <cstring>
 #include <fstream>
+#include <iomanip>
 #include <boost/regex.hpp>
 
 #define READ_FROM_STDIN			1
@@ -42,6 +43,7 @@ class Application
 	bool								lexer();
 	void								readStream(std::istream & stream, bool flagReadFromSTDIN);
 	void								execute();
+	std::string const&					typeToString(eOperandType type) const;
 
 	/* commands */
 	void	pushHandler();
