@@ -154,3 +154,16 @@ const char * Exceptions::Directory::what() const throw()
 {
 	return ("Error : is a directory");
 }
+
+// ----- IsNotInt8 -----
+
+Exceptions::IsNotInt8::IsNotInt8()
+{}
+
+Exceptions::IsNotInt8::~IsNotInt8()
+{}
+
+const char * Exceptions::IsNotInt8::what() const throw()
+{
+	return ("Is not an int8 value");
+}

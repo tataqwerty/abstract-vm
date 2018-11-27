@@ -98,6 +98,14 @@ public:
 		~Directory();
 		const char	*	what() const throw();
 	};
+
+	class	IsNotInt8 : public std::exception
+	{
+	public:
+		IsNotInt8();
+		~IsNotInt8();
+		const char	*	what() const throw();
+	};
 };
 
 #endif

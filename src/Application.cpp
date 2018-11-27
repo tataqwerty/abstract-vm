@@ -337,5 +337,5 @@ void	Application::printHandler()
 	if (stack.top()->getType() == types["int8"])
 		std::cout << boost::numeric_cast<char>(std::stoi(stack.top()->toString())) << std::endl;
 	else
-		throw Exceptions::NotEqualValues();
+		throw Exceptions::IsNotInt8();
 }
